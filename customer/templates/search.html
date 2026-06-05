@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  {% if query %}"{{ query }}" 검색결과{% else %}검색{% endif %} - KYUBOBOOK
+</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FEFCF8;
+    --ink: #1A1410;
+    --brown: #5C3D2E;
+    --accent: #C8472B;
+    --gold: #D4A853;
+    --muted: #8C7B6E;
+    --light-border: #E8E0D5;
+    --hover-bg: #F2EDE5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--ink); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; line-height: 1.6; }
+
+  /* ─── TOP BAR ─── */
+  .top-bar { background: var(--ink); color: #ccc; font-size: 11px; padding: 6px 0; text-align: center; letter-spacing: 0.05em; }
+  .top-bar a { color: var(--gold); text-decoration: none; margin: 0 8px; }
+
+  /* ─── HEADER ─── */
+  header { background: var(--warm-white); border-bottom: 2px solid var(--ink); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(26,20,16,0.08); }
+  .header-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .header-top {
+    display: grid;
+    grid-template-columns: 298px minmax(520px, 600px) auto;
+    align-items: center;
+    gap: 24px;
+    padding: 14px 0 10px;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: -0.5px; white-space: nowrap; flex-shrink: 0; }
+  .logo span { color: var(--accent); }
+  .search-wrap { width: 100%; display: flex; max-width: 600px; border: 1.5px solid var(--ink); background: white; overflow: hidden; }
+  .search-wrap select { border: none; border-right: 1.5px solid var(--ink); background: var(--hover-bg); padding: 0 12px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; outline: none; color: var(--ink); }
+  .search-wrap input { flex: 1; border: none; padding: 10px 14px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; outline: none; background: transparent; }
+  .search-wrap button { background: var(--ink); color: white; border: none; padding: 0 18px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+  .search-wrap button:hover { background: var(--accent); }
+  .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; min-width: 260px; }
+  .btn-action { padding: 7px 14px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+  .btn-action:hover { background: var(--ink); color: white; }
+  .btn-action.primary { background: var(--ink); color: white; }
+  .btn-action.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .icon-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--light-border); background: transparent; cursor: pointer; font-size: 16px; transition: all 0.2s; position: relative; text-decoration: none; color: var(--ink); }
+  .icon-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+  .badge { position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  nav { border-top: 1px solid var(--light-border); }
+  .nav-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .nav-item { flex: 1; text-align: center; padding: 12px 10px; font-size: 13px; font-weight: 500; color: var(--ink); text-decoration: none; letter-spacing: 0.02em; position: relative; transition: color 0.2s; white-space: nowrap; }
+  .nav-item::after { content: ''; position: absolute; bottom: 0; left: 10px; right: 10px; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.2s; }
+  .nav-item:first-child::after { left: 10px; }
+  .nav-item:hover { color: var(--accent); }
+  .nav-item:hover::after, .nav-item.active::after { transform: scaleX(1); }
+  .nav-item.active { color: var(--accent); font-weight: 700; }
+
+  /* ─── SEARCH HERO ─── */
+  .search-hero {
+    background: var(--ink);
+    padding: 32px 0 28px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .search-hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .search-hero .breadcrumb {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .search-hero .breadcrumb a { color: rgba(255,255,255,0.4); text-decoration: none; }
+  .search-hero .breadcrumb a:hover { color: var(--gold); }
+  .search-hero h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .search-hero h1 em { color: var(--gold); font-style: normal; }
+  .result-count {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+  .result-count strong { color: var(--gold); }
+
+  /* ─── LAYOUT ─── */
+  .search-layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  /* ─── FILTER SIDEBAR ─── */
+  .filter-sidebar {
+    width: 210px;
+    flex-shrink: 0;
+  }
+  .filter-box {
+    background: white;
+    border: 1px solid var(--light-border);
+    border-radius: 4px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .filter-box-title {
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--hover-bg);
+    border-bottom: 1px solid var(--light-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  .filter-box-body { padding: 12px 16px; }
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink);
+    transition: color 0.15s;
+  }
+  .filter-option:hover { color: var(--accent); }
+  .filter-option input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+  .filter-option .count { margin-left: auto; font-size: 11px; color: var(--muted); }
+  .price-range { display: flex; flex-direction: column; gap: 8px; }
+  .price-inputs { display: flex; align-items: center; gap: 6px; }
+  .price-input {
+    flex: 1;
+    padding: 7px 10px;
+    border: 1.5px solid var(--light-border);
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    outline: none;
+    color: var(--ink);
+    text-align: right;
+  }
+  .price-input:focus { border-color: var(--ink); }
+  .price-sep { font-size: 11px; color: var(--muted); }
+  .filter-apply-btn {
+    width: 100%;
+    padding: 9px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    transition: background 0.2s;
+    margin-top: 4px;
+  }
+  .filter-apply-btn:hover { background: var(--accent); }
+  .filter-reset {
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    display: block;
+    margin-top: 8px;
+    transition: color 0.2s;
+  }
+  .filter-reset:hover { color: var(--accent); }
+
+  /* ─── RESULTS AREA ─── */
+  .results-area { flex: 1; min-width: 0; }
+
+  /* 정렬 바 */
+  .sort-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid var(--light-border);
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .sort-bar .sort-label { font-size: 12px; color: var(--muted); }
+  .sort-options { display: flex; gap: 0; }
+  .sort-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    border: 1px solid var(--light-border);
+    background: white;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-left: -1px;
+  }
+  .sort-btn:hover { background: var(--hover-bg); color: var(--ink); z-index: 1; position: relative; }
+  .sort-btn.active { background: var(--ink); color: white; border-color: var(--ink); z-index: 1; position: relative; }
+  .view-toggle { display: flex; gap: 4px; }
+  .view-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--light-border); background: white; cursor: pointer; font-size: 13px; transition: all 0.15s; }
+  .view-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ─── 책 카드 (리스트 뷰) ─── */
+  .book-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--light-border); border-radius: 4px; overflow: hidden; background: white; }
+  .book-list-item {
+    display: flex;
+    gap: 20px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--light-border);
+    transition: background 0.15s;
+    align-items: flex-start;
+  }
+  .book-list-item:last-child { border-bottom: none; }
+  .book-list-item:hover { background: var(--hover-bg); }
+
+  .book-cover-wrap {
+    width: 80px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .book-cover {
+    width: 80px;
+    height: 110px;
+    background: linear-gradient(135deg, #2D4A3E, #1A2E26);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 8px;
+    line-height: 1.4;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 600;
+    word-break: keep-all;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+  }
+  .book-cover::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 6px;
+    background: rgba(0,0,0,0.2);
+  }
+  .cover-1 { background: linear-gradient(135deg, #2D4A3E, #1A2E26); }
+  .cover-2 { background: linear-gradient(135deg, #3D2E1A, #5C3D2E); }
+  .cover-3 { background: linear-gradient(135deg, #1A2D4A, #2E3D5C); }
+  .cover-4 { background: linear-gradient(135deg, #4A1A2D, #5C2E3D); }
+  .cover-5 { background: linear-gradient(135deg, #2D3D1A, #3D5C2E); }
+
+  .book-info { flex: 1; min-width: 0; }
+  .book-category { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .book-title-link {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1.4;
+    display: block;
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .book-title-link:hover { color: var(--accent); }
+  .book-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .book-meta span::after { content: '·'; margin-left: 8px; }
+  .book-meta span:last-child::after { content: ''; }
+  .book-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 10px;
+  }
+  .book-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .book-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    border: 1px solid var(--light-border);
+    color: var(--muted);
+    border-radius: 2px;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .book-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  .book-price-area { flex-shrink: 0; text-align: right; min-width: 130px; }
+  .book-rating { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; justify-content: flex-end; }
+  .stars { color: var(--gold); font-size: 12px; letter-spacing: 1px; }
+  .rating-val { font-size: 11px; color: var(--muted); }
+  .original-price { font-size: 11px; color: var(--muted); text-decoration: line-through; margin-bottom: 2px; }
+  .sale-badge { display: inline-block; background: var(--accent); color: white; font-size: 10px; font-weight: 700; padding: 1px 5px; margin-right: 4px; border-radius: 2px; }
+  .book-price { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+  .book-actions { display: flex; flex-direction: column; gap: 6px; }
+  .btn-cart {
+    padding: 8px 16px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn-cart:hover { background: var(--accent); }
+  .btn-wish {
+    padding: 7px 16px;
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--light-border);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-wish:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── 그리드 뷰 ─── */
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 20px;
+  }
+  .book-grid-item {
+    background: white;
+    border: 1px solid var(--light-border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .book-grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,20,16,0.12); }
+  .book-grid-cover {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    padding: 12px;
+    line-height: 1.5;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+  }
+  .book-grid-cover::after { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px; background: rgba(0,0,0,0.2); }
+  .book-grid-body { padding: 12px; }
+  .book-grid-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 4px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.4; text-decoration: none; display: block; }
+  .book-grid-title:hover { color: var(--accent); }
+  .book-grid-author { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .book-grid-price { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .book-grid-btn { width: 100%; padding: 8px; background: var(--ink); color: white; border: none; cursor: pointer; font-size: 11px; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; transition: background 0.2s; }
+  .book-grid-btn:hover { background: var(--accent); }
+
+  /* ─── 검색어 강조 ─── */
+  .highlight { background: #FFF3CD; color: var(--ink); padding: 0 1px; border-radius: 2px; font-weight: 700; }
+
+  /* ─── 빈 결과 ─── */
+  .no-results {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border: 1px solid var(--light-border);
+    border-radius: 4px;
+  }
+  .no-results .icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+  .no-results h3 { font-family: 'Noto Serif KR', serif; font-size: 1.2rem; margin-bottom: 8px; color: var(--ink); }
+  .no-results p { font-size: 13px; color: var(--muted); line-height: 1.8; }
+  .no-results .suggestions { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .suggestion-tag { padding: 6px 14px; border: 1.5px solid var(--light-border); font-size: 12px; color: var(--ink); text-decoration: none; transition: all 0.2s; border-radius: 2px; }
+  .suggestion-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── 페이지네이션 ─── */
+  .pagination { display: flex; justify-content: center; gap: 4px; margin-top: 28px; }
+  .page-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--light-border);
+    background: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .page-btn:hover, .page-btn.active { background: var(--ink); border-color: var(--ink); color: white; }
+  .page-btn.disabled { color: var(--muted); cursor: not-allowed; pointer-events: none; }
+
+  /* ─── FOOTER ─── */
+  footer { background: var(--ink); color: rgba(255,255,255,0.35); font-size: 11px; text-align: center; padding: 20px; margin-top: 40px; }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: var(--gold); }
+
+  footer {
+      background: #111;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 24px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 24px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-desc { font-size: 11px; line-height: 1.8; color: rgba(255,255,255,0.35); }
+    .footer-col h4 { color: rgba(255,255,255,0.8); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.4); text-decoration: none; margin-bottom: 8px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: rgba(255,255,255,0.25);
+    }
+    .footer-bottom a { color: rgba(255,255,255,0.3); text-decoration: none; margin-left: 16px; }
+    .footer-bottom a:hover { color: var(--gold); }
+  
+    /* ─── MODAL (로그인) ─── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      width: 380px;
+      padding: 40px;
+      position: relative;
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted);
+    }
+    .modal-close:hover { color: var(--ink); }
+    .modal-title { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+    .modal-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--light-border); }
+    .modal-tab {
+      flex: 1; padding: 10px; text-align: center; cursor: pointer;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .modal-tab.active { color: var(--ink); border-color: var(--ink); font-weight: 700; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--light-border);
+      font-size: 13px; font-family: 'Noto Sans KR', sans-serif;
+      outline: none; transition: border 0.2s;
+      background: white;
+    }
+    .form-input:focus { border-color: var(--ink); }
+    .form-submit {
+      width: 100%; padding: 13px;
+      background: var(--ink); color: white;
+      border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .form-submit:hover { background: var(--accent); }
+    .form-links { display: flex; justify-content: center; gap: 16px; margin-top: 16px; }
+    .form-link { font-size: 11px; color: var(--muted); text-decoration: none; }
+    .form-link:hover { color: var(--ink); text-decoration: underline; }
+    .divider-or { text-align: center; position: relative; margin: 20px 0; }
+    .divider-or::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--light-border); }
+    .divider-or span { background: white; padding: 0 12px; font-size: 11px; color: var(--muted); position: relative; }
+    .social-btn {
+      width: 100%; padding: 10px;
+      border: 1.5px solid var(--light-border);
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+      margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--ink); background: var(--hover-bg); }
+    .kakao { background: #FEE500; border-color: #FEE500; }
+    .kakao:hover { background: #FAD800; }
+
+  /* ── 19금 블러 처리 ── */
+  .adult-blur { filter: blur(10px) !important; }
+  .adult-cover-wrap { position: relative; }
+  .adult-cover-wrap > a, .adult-cover-wrap > div { filter: blur(10px); }
+  .adult-badge {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(0,0,0,0.75); color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 5px 8px; border-radius: 4px;
+    text-align: center; pointer-events: none;
+    white-space: nowrap; z-index: 10; line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  📦 오늘 오후 3시 이전 주문 시 당일 출고 &nbsp;|&nbsp;
+  고객센터: 1588-0000
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <a href="/" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="KYUBOBOOK 로고" style="height:65px; width:65px; vertical-align:middle; margin-right:10px; object-fit:contain; border-radius:50%;">KYUBO<span>BOOK</span></a>
+      <form class="search-wrap" id="header-search-form" action="/search" method="GET">
+        <select name="type" id="search-type">
+          <option value="전체" {% if search_type=='전체' %}selected{% endif %}>전체</option>
+          <option value="도서명" {% if search_type=='도서명' %}selected{% endif %}>도서명</option>
+          <option value="저자명" {% if search_type=='저자명' %}selected{% endif %}>저자명</option>
+          <option value="출판사" {% if search_type=='출판사' %}selected{% endif %}>출판사</option>
+        </select>
+        <input type="text" name="q" id="search-input"
+               value="{{ query or '' }}"
+               placeholder="도서명, 저자, 출판사를 입력하세요">
+        <button type="submit">🔍</button>
+      </form>
+      <div class="header-actions">
+        <a href="/cart" class="icon-btn">🛒</a>
+        {% if session.member_id %}
+        <a href="/mypage" class="btn-action">{{ session.member_name }}</a>
+        <a href="/logout" class="btn-action" style="color:var(--accent);border-color:var(--accent);">로그아웃</a>
+        {% else %}
+        <a href="/login" class="btn-action primary">로그인 / 회원가입</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-item">🏠홈</a>
+      <a href="/books/local" class="nav-item">🇰🇷국내도서</a>
+      <a href="/books/foreign" class="nav-item">🌍외국도서</a>
+      <a href="/bestseller" class="nav-item">🏆베스트셀러</a>
+      <a href="/new-releases" class="nav-item">✨신간</a>
+      <a href="/category" class="nav-item">📚카테고리</a>
+      <a href="/inventory" class="nav-item" style="color:var(--accent);font-weight:700;">📦 재고확인</a>
+    </div>
+  </nav>
+</header>
+
+<!-- 검색 히어로 -->
+<div class="search-hero">
+  <div class="search-hero-inner">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span>›</span> <span>검색결과</span>
+    </div>
+    {% if query %}
+    <h1><em>"{{ query }}"</em> 검색 결과</h1>
+    <div class="result-count">
+      {% if total > 0 %}
+        <strong>{{ total }}</strong>개의 도서를 찾았어요
+        {% if search_type != '전체' %} · {{ search_type }} 기준{% endif %}
+      {% else %}
+        검색 결과가 없습니다
+      {% endif %}
+    </div>
+    {% else %}
+    <h1>도서 검색</h1>
+    <div class="result-count">찾고 싶은 도서를 검색해보세요</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- 검색 레이아웃 -->
+<div class="search-layout">
+
+  <!-- 필터 사이드바 -->
+  <aside class="filter-sidebar">
+    <form id="filter-form" action="/search" method="GET">
+      <input type="hidden" name="q" value="{{ query or '' }}">
+      <input type="hidden" name="type" value="{{ search_type or '전체' }}">
+      <input type="hidden" name="sort" id="sort-hidden" value="{{ sort or 'relevance' }}">
+      <input type="hidden" name="page" value="1">
+
+      <!-- 카테고리 필터 -->
+      <div class="filter-box">
+        <div class="filter-box-title">카테고리</div>
+        <div class="filter-box-body">
+          {% if categories %}
+            {% for cat in categories %}
+            <label class="filter-option">
+              <input type="checkbox" name="category" value="{{ cat.name }}"
+                {% if cat.name in selected_categories %}checked{% endif %}>
+              <span>{{ cat.name }}</span>
+              <span class="count">{{ cat.count }}</span>
+            </label>
+            {% endfor %}
+          {% else %}
+            <div style="font-size:12px;color:var(--muted);">카테고리 없음</div>
+          {% endif %}
+        </div>
+      </div>
+
+
+      <!-- 출판연도 필터 -->
+      <div class="filter-box">
+        <div class="filter-box-title">출판연도</div>
+        <div class="filter-box-body">
+          {% set year_options = [('2024~2025', '2024'), ('2022~2023', '2022'), ('2020~2021', '2020'), ('~2019', '2019')] %}
+          {% for label, val in year_options %}
+          <label class="filter-option">
+            <input type="radio" name="year" value="{{ val }}"
+              {% if selected_year == val %}checked{% endif %}>
+            <span>{{ label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit" class="filter-apply-btn">필터 적용</button>
+      <a href="/search?q={{ query or '' }}" class="filter-reset">필터 초기화</a>
+    </form>
+  </aside>
+
+  <!-- 결과 영역 -->
+  <div class="results-area">
+
+    <!-- 정렬 바 -->
+    <div class="sort-bar">
+      <span class="sort-label">
+        {% if total > 0 %}총 <strong>{{ total }}</strong>건{% endif %}
+      </span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="sort-options">
+          {% set sort_options = [('relevance','정확도'), ('newest','최신순'), ('price_asc','낮은가격'), ('price_desc','높은가격'), ('bestseller','판매순')] %}
+          {% for val, label in sort_options %}
+          <button class="sort-btn {% if (sort or 'relevance') == val %}active{% endif %}"
+                  onclick="setSort('{{ val }}')">{{ label }}</button>
+          {% endfor %}
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" id="btn-list" onclick="setView('list')" title="리스트 보기">☰</button>
+          <button class="view-btn" id="btn-grid" onclick="setView('grid')" title="그리드 보기">⊞</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 결과 목록 -->
+    {% if books %}
+
+      <!-- 리스트 뷰 -->
+      <div id="view-list">
+        <div class="book-list">
+          {% for book in books %}
+          <div class="book-list-item">
+            <div class="book-cover-wrap {% if book.is_adult and not session.get('is_adult_verified') %}adult-cover-wrap{% endif %}">
+              <a href="/book/{{ book.book_id }}" class="book-cover cover-{{ (loop.index % 5) + 1 }}">
+                {% if book.image_url %}
+                <img src="{{ book.image_url }}" alt="{{ book.title }}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;">
+                {% else %}
+                {{ book.title | truncate(20, true, '') }}
+                {% endif %}
+              </a>
+            </div>
+            <div class="book-info">
+              <div class="book-category">{{ book.category or '도서' }}</div>
+              <a href="/book/{{ book.book_id }}" class="book-title-link">
+                {{ book.title | highlight_query(query) | safe if query else book.title }}
+              </a>
+              <div class="book-meta">
+                <span>{{ book.author }}</span>
+                <span>{{ book.publisher }}</span>
+                <span>{{ book.pub_date or '' }}</span>
+                {% if book.isbn %}<span>ISBN {{ book.isbn }}</span>{% endif %}
+              </div>
+              {% if book.description %}
+              <div class="book-desc">{{ book.description }}</div>
+              {% endif %}
+              <div class="book-tags">
+                {% if book.author %}<a href="/search?q={{ book.author }}&type=저자명" class="book-tag">{{ book.author }}</a>{% endif %}
+                {% if book.publisher %}<a href="/search?q={{ book.publisher }}&type=출판사" class="book-tag">{{ book.publisher }}</a>{% endif %}
+              </div>
+            </div>
+            <div class="book-price-area">
+              <div class="book-rating">
+                <span class="stars">
+                  {% set r = book.avg_rating | int if book.avg_rating else 0 %}
+                  {{ '★' * r }}{{ '☆' * (5 - r) }}
+                </span>
+                <span class="rating-val">{{ '%.1f' | format(book.avg_rating) if book.avg_rating else '0.0' }}</span>
+              </div>
+              {% if book.discount_rate and book.discount_rate > 0 %}
+              <div class="original-price">{{ "{:,}".format(book.original_price | int) if book.original_price else '' }}원</div>
+              <div>
+                <span class="sale-badge">{{ book.discount_rate }}%</span>
+                <span class="book-price">{{ "{:,}".format(book.price | int) }}원</span>
+              </div>
+              {% else %}
+              <div class="book-price">{{ "{:,}".format(book.price | int) }}원</div>
+              {% endif %}
+              <div class="book-actions">
+                <a href="/cart/add/{{ book.book_id }}" class="btn-cart">🛒 장바구니</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- 그리드 뷰 -->
+      <div id="view-grid" style="display:none;">
+        <div class="book-grid">
+          {% for book in books %}
+          <div class="book-grid-item">
+            <a href="/book/{{ book.book_id }}" class="book-grid-cover cover-{{ (loop.index % 5) + 1 }}">
+              {% if book.image_url %}
+              <img src="{{ book.image_url }}" alt="{{ book.title }}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;">
+              {% else %}
+              {{ book.title | truncate(24, true, '') }}
+              {% endif %}
+            </a>
+            <div class="book-grid-body">
+              <a href="/book/{{ book.book_id }}" class="book-grid-title">{{ book.title }}</a>
+              <div class="book-grid-author">{{ book.author }} · {{ book.publisher }}</div>
+              <div class="book-grid-price">{{ "{:,}".format(book.price | int) }}원</div>
+              <a href="/cart/add/{{ book.book_id }}" class="book-grid-btn">🛒 장바구니 담기</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- 페이지네이션 -->
+      {% if total_pages > 1 %}
+      <div class="pagination">
+        {% if page > 1 %}
+        <a href="{{ url_for('search', q=query, type=search_type, sort=sort, page=page-1) }}" class="page-btn">‹</a>
+        {% else %}
+        <span class="page-btn disabled">‹</span>
+        {% endif %}
+
+        {% set start_page = [page - 2, 1] | max %}
+        {% set end_page   = [start_page + 4, total_pages] | min %}
+        {% for p in range(start_page, end_page + 1) %}
+        <a href="{{ url_for('search', q=query, type=search_type, sort=sort, page=p) }}"
+           class="page-btn {% if p == page %}active{% endif %}">{{ p }}</a>
+        {% endfor %}
+
+        {% if page < total_pages %}
+        <a href="{{ url_for('search', q=query, type=search_type, sort=sort, page=page+1) }}" class="page-btn">›</a>
+        {% else %}
+        <span class="page-btn disabled">›</span>
+        {% endif %}
+      </div>
+      {% endif %}
+
+    {% else %}
+      <!-- 결과 없음 -->
+      <div class="no-results">
+        <div class="icon">🔍</div>
+        {% if query %}
+        <h3>"{{ query }}"에 대한 검색 결과가 없습니다</h3>
+        <p>
+          검색어를 다시 확인해보세요.<br>
+          혹시 이런 책을 찾고 계신가요?
+        </p>
+        <div class="suggestions">
+          <a href="/search?q=소설" class="suggestion-tag">소설</a>
+          <a href="/search?q=자기계발" class="suggestion-tag">자기계발</a>
+          <a href="/search?q=경제경영" class="suggestion-tag">경제경영</a>
+          <a href="/search?q=에세이" class="suggestion-tag">에세이</a>
+          <a href="/search?q=과학" class="suggestion-tag">과학</a>
+        </div>
+        {% else %}
+        <h3>검색어를 입력해주세요</h3>
+        <p>도서명, 저자명, 출판사, ISBN으로 검색할 수 있어요.</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">KYUBO<span>BOOK</span></div>
+        <div class="footer-desc">온라인 주문 및 재고관리<br>시스템 기반 KYUBOBOOK 스마트 서점</div>
+      </div>
+      <div class="footer-col">
+        <h4>고객 서비스</h4>
+        <a href="/notice">공지사항</a>
+        <a href="/faq">자주 묻는 질문</a>
+        <a href="/shipping">배송 안내</a>
+      </div>
+      <div class="footer-col">
+        <h4>회원 서비스</h4>
+        <a href="/mypage">마이페이지</a>
+      </div>
+      <div class="footer-col">
+        <h4>회사 정보</h4>
+        <a href="/about">회사 소개</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 KYUBOBOOK. All rights reserved. | PC 버전</span>
+      <div>
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+        <a href="#">사업자정보</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── 정렬 변경 ───
+function setSort(val) {
+  document.getElementById('sort-hidden').value = val;
+  document.getElementById('filter-form').submit();
+}
+
+// ─── 뷰 전환 ───
+function setView(type) {
+  const listEl = document.getElementById('view-list');
+  const gridEl = document.getElementById('view-grid');
+  const btnList = document.getElementById('btn-list');
+  const btnGrid = document.getElementById('btn-grid');
+  if (type === 'list') {
+    listEl.style.display = 'block';
+    gridEl.style.display = 'none';
+    btnList.classList.add('active');
+    btnGrid.classList.remove('active');
+    localStorage.setItem('bookViewMode', 'list');
+  } else {
+    listEl.style.display = 'none';
+    gridEl.style.display = 'block';
+    btnList.classList.remove('active');
+    btnGrid.classList.add('active');
+    localStorage.setItem('bookViewMode', 'grid');
+  }
+}
+
+// 저장된 뷰 모드 복원
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('bookViewMode');
+  if (saved === 'grid') setView('grid');
+});
+
+// ─── 검색 유효성 검사 ───
+function // ─── 헤더 검색폼: 깨끗한 URL로 이동 (중복 파라미터 방지) ───
+document.getElementById('header-search-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const q    = document.getElementById('search-input').value.trim();
+  const type = document.getElementById('search-type').value;
+  if (!q) {
+    // 공백이면 빈 검색 페이지로
+    window.location.href = '/search';
+  } else {
+    window.location.href = '/search?type=' + encodeURIComponent(type) + '&q=' + encodeURIComponent(q);
+  }
+});
+
+// ─── 찜하기 ───
+
+</script>
+</body>
+</html>

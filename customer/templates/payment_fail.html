@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>결제 실패 - KYUBOBOOK</title>
+<style>
+  :root { --cream:#FAF7F2; --ink:#1A1410; --accent:#C8472B; --muted:#8C7B6E; --light-border:#E8E0D5; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--cream); font-family:'Malgun Gothic',sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+  header { background:#FEFCF8; border-bottom:2px solid var(--ink); padding:14px 40px; display:flex; align-items:center; }
+  .logo { font-size:26px; font-weight:700; color:var(--ink); text-decoration:none; }
+  .logo span { color:var(--accent); }
+  .wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:60px 20px; }
+  .card { background:white; border:2px solid var(--ink); padding:60px 56px; text-align:center; max-width:440px; width:100%; animation:fadeIn .4s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .icon { font-size:64px; margin-bottom:24px; }
+  .title { font-size:24px; font-weight:700; margin-bottom:10px; }
+  .sub { font-size:13px; color:var(--muted); line-height:1.8; margin-bottom:12px; }
+  .err-box { background:#FFF5F5; border:1px solid #FFCDD2; padding:12px 16px; font-size:12px; color:#C62828; margin-bottom:28px; text-align:left; word-break:break-all; }
+  .btns { display:flex; gap:10px; justify-content:center; }
+  .btn { padding:13px 28px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Malgun Gothic',sans-serif; text-decoration:none; transition:all .2s; }
+  .btn-primary { background:var(--ink); color:white; border:none; }
+  .btn-primary:hover { background:var(--accent); }
+  .btn-outline { background:white; color:var(--ink); border:1.5px solid var(--ink); }
+  .btn-outline:hover { background:var(--cream); }
+  footer { background:#111; color:rgba(255,255,255,.3); font-size:11px; text-align:center; padding:16px; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="로고" style="height:50px;width:50px;vertical-align:middle;margin-right:8px;object-fit:contain;border-radius:50%;">KYUBO<span>BOOK</span></a>
+</header>
+<div class="wrap">
+  <div class="card">
+    <div class="icon">😢</div>
+    <div class="title">결제에 실패했어요</div>
+    <div class="sub">결제 처리 중 문제가 발생했습니다.<br>다시 시도하거나 다른 결제 수단을 이용해 주세요.</div>
+    {% if message %}
+    <div class="err-box">{{ message }}</div>
+    {% endif %}
+    <div class="btns">
+      <a href="/cart" class="btn btn-primary">장바구니로 돌아가기</a>
+      <a href="/" class="btn btn-outline">홈으로</a>
+    </div>
+  </div>
+</div>
+<footer>© 2025 KYUBOBOOK</footer>
+</body>
+</html>

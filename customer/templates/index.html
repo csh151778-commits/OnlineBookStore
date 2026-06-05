@@ -1,0 +1,3872 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KYUBOBOOK - 온라인 서점</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #faf7f2;
+        --warm-white: #fefcf8;
+        --ink: #1a1410;
+        --brown: #5c3d2e;
+        --accent: #c8472b;
+        --gold: #d4a853;
+        --muted: #8c7b6e;
+        --light-border: #e8e0d5;
+        --hover-bg: #f2ede5;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--cream);
+        color: var(--ink);
+        font-family: "Noto Sans KR", sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* ─── TOP BAR ─── */
+      .top-bar {
+        background: var(--ink);
+        color: #ccc;
+        font-size: 11px;
+        padding: 6px 0;
+        text-align: center;
+        letter-spacing: 0.05em;
+      }
+      .top-bar a {
+        color: var(--gold);
+        text-decoration: none;
+        margin: 0 8px;
+      }
+
+      /* ─── HEADER ─── */
+      header {
+        background: var(--warm-white);
+        border-bottom: 2px solid var(--ink);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 12px rgba(26, 20, 16, 0.08);
+      }
+
+      .header-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .header-top {
+        display: grid;
+        grid-template-columns: 298px minmax(520px, 600px) auto;
+        align-items: center;
+        gap: 24px;
+        padding: 14px 0 10px;
+      }
+
+      .logo {
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        text-decoration: none;
+        letter-spacing: -0.5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .logo span {
+        color: var(--accent);
+      }
+
+      .search-wrap {
+        width: 100%;
+        display: flex;
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1.5px solid var(--ink);
+        background: white;
+        overflow: visible;
+        position: relative;
+        justify-self: center;
+      }
+      .search-wrap select {
+        border: none;
+        border-right: 1.5px solid var(--ink);
+        background: var(--hover-bg);
+        padding: 0 12px;
+        font-size: 12px;
+        font-family: "Noto Sans KR", sans-serif;
+        cursor: pointer;
+        outline: none;
+        color: var(--ink);
+      }
+      .search-wrap input {
+        flex: 1;
+        border: none;
+        padding: 10px 14px;
+        font-size: 13px;
+        font-family: "Noto Sans KR", sans-serif;
+        outline: none;
+        background: transparent;
+      }
+      .search-wrap button {
+        background: var(--ink);
+        color: white;
+        border: none;
+        padding: 0 18px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.2s;
+      }
+      .search-wrap button:hover {
+        background: var(--accent);
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+        justify-self: end;
+        justify-content: flex-end;
+        min-width: 260px;
+        white-space: nowrap;
+      }
+      .btn-action {
+        padding: 7px 14px;
+        font-size: 12px;
+        font-family: "Noto Sans KR", sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        border: 1.5px solid var(--ink);
+        color: var(--ink);
+        background: transparent;
+        transition: all 0.2s;
+        letter-spacing: 0.02em;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .btn-action:hover {
+        background: var(--ink);
+        color: white;
+      }
+      .btn-action.primary {
+        background: var(--ink);
+        color: white;
+      }
+      .btn-action.primary:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid var(--light-border);
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.2s;
+        position: relative;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .icon-btn:hover {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+      .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--accent);
+        color: white;
+        font-size: 9px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+
+      /* ─── NAV ─── */
+      nav {
+        border-top: 1px solid var(--light-border);
+        background: var(--warm-white);
+      }
+      .nav-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .nav-item {
+        flex: 1;
+        text-align: center;
+        padding: 12px 10px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        text-decoration: none;
+        letter-spacing: 0.02em;
+        position: relative;
+        transition: color 0.2s;
+        white-space: nowrap;
+      }
+      .nav-item:first-child::after {
+        left: 10px;
+      }
+      .nav-item::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        right: 10px;
+        height: 2px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transition: transform 0.2s;
+      }
+      .nav-item:hover {
+        color: var(--accent);
+      }
+      .nav-item:hover::after {
+        transform: scaleX(1);
+      }
+      .nav-item.active {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .nav-item.active::after {
+        transform: scaleX(1);
+      }
+
+      /* ─── MAIN BANNER ─── */
+      .banner-section {
+        background: var(--ink);
+        position: relative;
+        overflow: hidden;
+        height: 360px;
+      }
+      .banner-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          #1a1410 0%,
+          #2d1f17 40%,
+          #3d2b1f 70%,
+          #1a1410 100%
+        );
+      }
+      .banner-grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.3;
+      }
+      .banner-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 40px;
+        height: 200%;
+        display: grid;
+        grid-template-columns: 1fr 400px 400px;
+        align-items: center;
+        gap: 0;
+        width: 100%;
+      }
+      .banner-text {
+        padding-right: 30px;
+      }
+
+      .banner-center-anim {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        overflow: hidden;
+      }
+      .aurora-wrap {
+        position: relative;
+        width: 360px;
+        height: 300px;
+        overflow: hidden;
+      }
+      .aurora-wrap svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .aurora-fade-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(#1a1410, transparent);
+        z-index: 2;
+      }
+      .aurora-fade-bot {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(transparent, #1a1410);
+        z-index: 2;
+      }
+      .aurora-label {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: "Playfair Display", serif;
+        font-size: 11px;
+        color: rgba(212, 168, 83, 0.5);
+        letter-spacing: 6px;
+        z-index: 3;
+        white-space: nowrap;
+      }
+
+      /* ══════════════════════════════════════
+     타이핑 효과 (왼쪽 배너 타이틀)
+  ══════════════════════════════════════ */
+      .banner-title {
+        min-height: 106px;
+      }
+      .banner-title .cursor {
+        display: inline-block;
+        width: 4px;
+        height: 0.9em;
+        background: var(--gold);
+        margin-left: 4px;
+        vertical-align: text-bottom;
+        animation: cursorBlink 0.75s step-end infinite;
+      }
+      @keyframes cursorBlink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .banner-tag {
+        display: inline-block;
+        background: var(--accent);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        padding: 4px 10px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .banner-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 42px;
+        font-weight: 700;
+        color: white;
+        line-height: 1.2;
+        margin-bottom: 12px;
+        letter-spacing: -1px;
+      }
+      .banner-sub {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 24px;
+        line-height: 1.8;
+      }
+      .banner-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: var(--gold);
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.05em;
+        transition: all 0.2s;
+      }
+      .banner-btn:hover {
+        background: white;
+      }
+      .banner-books {
+        display: flex;
+        gap: 16px;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      .book-card-mini {
+        position: relative;
+        background: white;
+        width: 95px;
+        border-radius: 2px;
+        box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s;
+        cursor: pointer;
+      }
+      .book-card-mini:hover {
+        transform: translateY(-8px) rotate(-1deg);
+      }
+      .book-card-mini.tall {
+        width: 110px;
+      }
+      .book-cover {
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Serif KR", serif;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        padding: 10px;
+        line-height: 1.4;
+      }
+      .cover-1 {
+        background: linear-gradient(160deg, #2e4057, #48a999);
+        color: white;
+      }
+      .book-cover {
+        position: relative;
+        overflow: hidden;
+      }
+      .book-cover img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .book-cover img ~ * {
+        display: none;
+      }
+      .cover-2 {
+        background: linear-gradient(160deg, #8b1a1a, #d4622a);
+        color: #ffe8d5;
+      }
+      .cover-3 {
+        background: linear-gradient(160deg, #1b4332, #40916c);
+        color: #d8f3dc;
+      }
+      .book-info-mini {
+        padding: 8px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      /* ─── BANNER INDICATORS ─── */
+      .banner-indicators {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        z-index: 3;
+      }
+      .dot {
+        width: 24px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .dot.active {
+        background: var(--gold);
+        width: 36px;
+      }
+
+      /* ─── SLIDE SYSTEM ─── */
+      .slides-wrapper {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+      .banner-slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transform-origin: left center;
+        transition: none;
+      }
+      .banner-slide.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      /* 페이지 넘기기 — 나가는 슬라이드 */
+      .banner-slide.slide-out {
+        animation: pageFlipOut 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        z-index: 3;
+      }
+      /* 페이지 넘기기 — 들어오는 슬라이드 */
+      .banner-slide.slide-in {
+        opacity: 1;
+        pointer-events: all;
+        animation: pageFlipIn 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        z-index: 2;
+      }
+      @keyframes pageFlipOut {
+        0% {
+          transform: perspective(1200px) rotateY(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: perspective(1200px) rotateY(-90deg);
+          opacity: 0;
+        }
+      }
+      @keyframes pageFlipIn {
+        0% {
+          transform: perspective(1200px) rotateY(90deg);
+          opacity: 0;
+        }
+        100% {
+          transform: perspective(1200px) rotateY(0deg);
+          opacity: 1;
+        }
+      }
+      /* 텍스트 슬라이드인 */
+      .banner-slide.slide-in .banner-tag,
+      .banner-slide.slide-in .banner-title,
+      .banner-slide.slide-in .banner-sub,
+      .banner-slide.slide-in .banner-btn {
+        animation: textFadeUp 0.5s ease both;
+      }
+      .banner-slide.slide-in .banner-title {
+        animation-delay: 0.1s;
+      }
+      .banner-slide.slide-in .banner-sub {
+        animation-delay: 0.2s;
+      }
+      .banner-slide.slide-in .banner-btn {
+        animation-delay: 0.3s;
+      }
+      @keyframes textFadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      /* 책 카드 순차 등장 */
+      .banner-slide.slide-in .book-card-mini:nth-child(1) {
+        animation: bookPopIn 0.4s 0.25s ease both;
+      }
+      .banner-slide.slide-in .book-card-mini:nth-child(2) {
+        animation: bookPopIn 0.4s 0.35s ease both;
+      }
+      .banner-slide.slide-in .book-card-mini:nth-child(3) {
+        animation: bookPopIn 0.4s 0.45s ease both;
+      }
+      @keyframes bookPopIn {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.93);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ─── 화살표 버튼 ─── */
+      .banner-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 4;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 22px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+        backdrop-filter: blur(4px);
+      }
+      .banner-arrow:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .banner-arrow.left {
+        left: 20px;
+      }
+      .banner-arrow.right {
+        right: 20px;
+      }
+
+      /* ─── SECTION COMMON ─── */
+      .section {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 48px 24px;
+      }
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        border-bottom: 2px solid var(--ink);
+        padding-bottom: 12px;
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .section-title .accent {
+        color: var(--accent);
+      }
+      .section-more {
+        font-size: 12px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: color 0.2s;
+      }
+      .section-more:hover {
+        color: var(--accent);
+      }
+
+      /* ─── TODAY PICKS ─── */
+      .today-section {
+        background: var(--warm-white);
+        border-top: 1px solid var(--light-border);
+        border-bottom: 1px solid var(--light-border);
+      }
+      .today-grid {
+        display: grid;
+        grid-template-columns: 1fr 1px 1fr 1px 1fr;
+        gap: 0;
+      }
+      .divider-v {
+        background: var(--light-border);
+      }
+
+      .today-col {
+        padding: 0 32px;
+      }
+      .today-col:first-child {
+        padding-left: 0;
+      }
+      .today-col:last-child {
+        padding-right: 0;
+      }
+
+      .col-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--light-border);
+      }
+      .col-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--ink);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .col-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+      .col-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 1px;
+      }
+
+      /* TODAY 추천 책 목록 */
+      .book-rank-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .book-rank-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 10px;
+        transition: background 0.2s;
+        cursor: pointer;
+      }
+      .book-rank-item:hover {
+        background: var(--hover-bg);
+      }
+      .rank-num {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--light-border);
+        width: 26px;
+        flex-shrink: 0;
+        line-height: 1;
+        margin-top: 2px;
+      }
+      .rank-cover {
+        width: 52px;
+        height: 70px;
+        flex-shrink: 0;
+        object-fit: cover;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+      }
+      .rank-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .rank-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .rank-author {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 5px;
+      }
+      .rank-price {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .rank-original {
+        font-size: 10px;
+        color: var(--muted);
+        text-decoration: line-through;
+        margin-left: 4px;
+      }
+
+      /* 오늘의 시 */
+      .poem-box {
+        background: var(--cream);
+        border-left: 3px solid var(--gold);
+        padding: 20px 20px 20px 24px;
+        margin-bottom: 16px;
+        font-family: "Noto Serif KR", serif;
+      }
+      .poem-title-small {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .poem-text {
+        font-size: 14px;
+        line-height: 2.2;
+        color: var(--ink);
+        font-weight: 300;
+      }
+      .poem-text em {
+        font-style: italic;
+        color: var(--accent);
+      }
+      .poem-author {
+        margin-top: 14px;
+        font-size: 11px;
+        color: var(--muted);
+        text-align: right;
+      }
+      .poem-book-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: white;
+        border: 1px solid var(--light-border);
+        text-decoration: none;
+        color: var(--ink);
+        transition: all 0.2s;
+      }
+      .poem-book-link:hover {
+        border-color: var(--ink);
+        background: var(--hover-bg);
+      }
+      .poem-book-cover {
+        width: 40px;
+        height: 54px;
+        background: linear-gradient(135deg, #6b4c9a, #a084ca);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: white;
+        text-align: center;
+        padding: 4px;
+        font-family: "Noto Serif KR", serif;
+      }
+      .poem-book-info {
+        flex: 1;
+      }
+      .poem-book-name {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .poem-book-author {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      /* 펀딩 */
+      .funding-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .funding-item {
+        border: 1px solid var(--light-border);
+        padding: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+      }
+      .funding-item:hover {
+        border-color: var(--ink);
+        transform: translateX(3px);
+      }
+      .funding-tag {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        padding: 2px 7px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+      .tag-hot {
+        background: #fff0ee;
+        color: var(--accent);
+      }
+      .tag-new {
+        background: #eef5ff;
+        color: #2563eb;
+      }
+      .tag-end {
+        background: #f5f5f5;
+        color: var(--muted);
+      }
+      .funding-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+      .funding-bar-wrap {
+        background: var(--light-border);
+        height: 4px;
+        border-radius: 2px;
+        margin-bottom: 6px;
+        overflow: hidden;
+      }
+      .funding-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--gold));
+        border-radius: 2px;
+      }
+      .funding-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+      }
+      .funding-percent {
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .funding-day {
+        color: var(--muted);
+      }
+
+      /* ─── 베스트셀러 GRID ─── */
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 20px;
+      }
+      .book-card {
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .book-card:hover {
+        transform: translateY(-4px);
+      }
+      .book-thumb {
+        width: 100%;
+        aspect-ratio: 2/3;
+        margin-bottom: 10px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.12);
+      }
+      .book-thumb-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Serif KR", serif;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        padding: 14px;
+        line-height: 1.6;
+        transition: transform 0.3s;
+      }
+      .book-card:hover .book-thumb-inner {
+        transform: scale(1.04);
+      }
+      .book-thumb-inner {
+        position: relative;
+        overflow: hidden;
+      }
+      .book-thumb-inner img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .book-thumb-inner img ~ * {
+        display: none;
+      }
+      .book-num {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .book-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: var(--accent);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 5px;
+        letter-spacing: 0.05em;
+      }
+      .book-name {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 3px;
+        line-height: 1.4;
+      }
+      .book-writer {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 5px;
+      }
+      .book-price-row {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .disc {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .price {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .orig {
+        font-size: 10px;
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      .c1 {
+        background: linear-gradient(160deg, #1a3a5c, #2d7dd2);
+        color: #e8f4f8;
+      }
+      .c2 {
+        background: linear-gradient(160deg, #4a1942, #9b2335);
+        color: #f8e8f0;
+      }
+      .c3 {
+        background: linear-gradient(160deg, #1b4332, #52b788);
+        color: #d8f3dc;
+      }
+      .c4 {
+        background: linear-gradient(160deg, #7b3f00, #c77b3a);
+        color: #fff3e0;
+      }
+      .c5 {
+        background: linear-gradient(160deg, #0d1b2a, #1b4f72);
+        color: #aed6f1;
+      }
+      .c6 {
+        background: linear-gradient(160deg, #4a235a, #7d3c98);
+        color: #f4ecf7;
+      }
+
+      /* ─── BANNER STRIP ─── */
+      .banner-strip {
+        background: var(--ink);
+        color: white;
+        padding: 20px 0;
+        overflow: hidden;
+      }
+      .strip-track {
+        display: flex;
+        gap: 60px;
+        white-space: nowrap;
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        animation: marquee 25s linear infinite;
+      }
+      .strip-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .strip-dot {
+        width: 4px;
+        height: 4px;
+        background: var(--gold);
+        border-radius: 50%;
+      }
+      @keyframes marquee {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ─── NEW ARRIVALS ─── */
+      .new-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 32px;
+        align-items: start;
+      }
+      .new-featured {
+        position: relative;
+        background: var(--ink);
+        padding: 28px;
+        color: white;
+      }
+      .new-featured-tag {
+        font-size: 9px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 16px;
+      }
+      .new-cover-big {
+        width: 120px;
+        height: 165px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        padding: 14px;
+        line-height: 1.6;
+        box-shadow: 6px 6px 24px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(160deg, #b5451b, #e8762d);
+        color: #fff5ee;
+      }
+      .new-featured-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+      .new-featured-author {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 16px;
+      }
+      .new-featured-desc {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+      .new-featured-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--gold);
+      }
+      .new-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .new-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--light-border);
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .new-item:hover {
+        border-color: var(--ink);
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      .new-item-cover {
+        width: 58px;
+        height: 80px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Serif KR", serif;
+        font-size: 10px;
+        text-align: center;
+        padding: 6px;
+        line-height: 1.5;
+        position: relative;
+        overflow: hidden;
+      }
+      .new-item-cover img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .new-item-cover img ~ * {
+        display: none;
+      }
+      .new-item-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .new-item-cat {
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 3px;
+      }
+      .new-item-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .new-item-author {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .new-item-price {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* ─── FOOTER ─── */
+      footer {
+        background: #111;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        margin-top: 0;
+      }
+      .footer-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 24px 24px;
+      }
+      .footer-top {
+        display: grid;
+        grid-template-columns: 200px 1fr 1fr 1fr;
+        gap: 40px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 24px;
+      }
+      .footer-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        color: white;
+        margin-bottom: 12px;
+      }
+      .footer-logo span {
+        color: var(--accent);
+      }
+      .footer-desc {
+        font-size: 11px;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .footer-col h4 {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+      .footer-col a {
+        display: block;
+        color: rgba(255, 255, 255, 0.4);
+        text-decoration: none;
+        margin-bottom: 8px;
+        transition: color 0.2s;
+      }
+      .footer-col a:hover {
+        color: var(--gold);
+      }
+      .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.25);
+      }
+      .footer-bottom a {
+        color: rgba(255, 255, 255, 0.3);
+        text-decoration: none;
+        margin-left: 16px;
+      }
+      .footer-bottom a:hover {
+        color: var(--gold);
+      }
+
+      /* ─── MODAL (로그인) ─── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: white;
+        width: 380px;
+        padding: 40px;
+        position: relative;
+        animation: modalIn 0.25s ease;
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--muted);
+      }
+      .modal-close:hover {
+        color: var(--ink);
+      }
+      .modal-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .modal-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+      .modal-tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 28px;
+        border-bottom: 2px solid var(--light-border);
+      }
+      .modal-tab {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.2s;
+      }
+      .modal-tab.active {
+        color: var(--ink);
+        border-color: var(--ink);
+        font-weight: 700;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        display: block;
+      }
+      .form-input {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid var(--light-border);
+        font-size: 13px;
+        font-family: "Noto Sans KR", sans-serif;
+        outline: none;
+        transition: border 0.2s;
+        background: white;
+      }
+      .form-input:focus {
+        border-color: var(--ink);
+      }
+      .form-submit {
+        width: 100%;
+        padding: 13px;
+        background: var(--ink);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: "Noto Sans KR", sans-serif;
+        letter-spacing: 0.05em;
+        transition: background 0.2s;
+        margin-top: 4px;
+      }
+      .form-submit:hover {
+        background: var(--accent);
+      }
+      .form-links {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .form-link {
+        font-size: 11px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .form-link:hover {
+        color: var(--ink);
+        text-decoration: underline;
+      }
+      .divider-or {
+        text-align: center;
+        position: relative;
+        margin: 20px 0;
+      }
+      .divider-or::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--light-border);
+      }
+      .divider-or span {
+        background: white;
+        padding: 0 12px;
+        font-size: 11px;
+        color: var(--muted);
+        position: relative;
+      }
+      .social-btn {
+        width: 100%;
+        padding: 10px;
+        border: 1.5px solid var(--light-border);
+        background: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: "Noto Sans KR", sans-serif;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+      }
+      .social-btn:hover {
+        border-color: var(--ink);
+        background: var(--hover-bg);
+      }
+      .kakao {
+        background: #fee500;
+        border-color: #fee500;
+      }
+      .kakao:hover {
+        background: #fad800;
+      }
+
+      /* ── 19금 블러 처리 ── */
+      .adult-blur {
+        filter: blur(10px) !important;
+      }
+      .adult-cover-wrap {
+        position: relative;
+      }
+      .adult-cover-wrap > a,
+      .adult-cover-wrap > div {
+        filter: blur(10px);
+      }
+      .adult-badge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 5px 8px;
+        border-radius: 4px;
+        text-align: center;
+        pointer-events: none;
+        white-space: nowrap;
+        z-index: 10;
+        line-height: 1.4;
+      }
+      .adult-cover-box {
+        position: relative;
+        overflow: hidden;
+      }
+      .adult-cover-box .adult-badge {
+        font-size: 10px;
+      }
+
+      /* 이번 주 화제의 신간: 성인인증 배지를 책 표지 중앙에 고정 */
+      .adult-cover-center {
+        position: relative;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .adult-cover-center .adult-badge {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+  .attendance-section {
+    max-width: 1280px;
+    margin: 34px auto;
+    padding: 0 24px;
+  }
+
+  .attendance-box {
+    background: #fff;
+    border: 1px solid var(--light-border);
+    border-left: 5px solid var(--gold);
+    padding: 22px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 18px rgba(26, 20, 16, 0.06);
+  }
+
+  .attendance-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .attendance-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--ink);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    border-radius: 50%;
+  }
+
+  .attendance-left h3 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .attendance-left p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  #attendance-btn,
+  .attendance-login-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s;
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  }
+
+  #attendance-btn:hover,
+  .attendance-login-btn:hover {
+    background: var(--accent);
+  }
+
+  #attendance-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+  }
+
+  .attendance-info {
+    background: var(--warm-white);
+    border: 1px solid var(--light-border);
+    border-top: none;
+    padding: 12px 26px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .attendance-info strong {
+    color: var(--accent);
+  }
+    </style>
+  </head>
+  <body>
+    {% if request.args.get('adult_block') %}
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        alert("🔞 성인 인증된 고객만 구매 가능합니다.");
+      });
+    </script>
+    {% endif %}
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      📦 오늘 오후 3시 이전 주문 시 당일 출고 &nbsp;|&nbsp; 고객센터: 1588-0000
+    </div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-inner">
+        <div class="header-top">
+          <a href="#" class="logo">
+            <img
+              src="{{ url_for('static', filename='images/logo.png') }}"
+              alt="KYUBOBOOK 로고"
+              style="
+                height: 65px;
+                width: 65px;
+                vertical-align: middle;
+                margin-right: 10px;
+                object-fit: contain;
+                border-radius: 50%;
+              "
+            />KYUBO<span>BOOK</span></a
+          >
+          <form
+            class="search-wrap"
+            action="/search"
+            method="GET"
+            onsubmit="return validateSearch();"
+            style="position: relative"
+          >
+            <select name="type" id="search-type">
+              <option value="전체">전체</option>
+              <option value="도서명">도서명</option>
+              <option value="저자명">저자명</option>
+              <option value="출판사">출판사</option>
+            </select>
+            <input
+              type="text"
+              name="q"
+              id="search-input"
+              placeholder="도서명, 저자, 출판사를 입력하세요"
+              autocomplete="off"
+            />
+            <button type="submit">🔍</button>
+            <!-- 자동완성 드롭다운 -->
+            <div id="suggest-box"></div>
+          </form>
+          <div class="header-actions">
+            <a href="/cart" class="icon-btn">🛒</a>
+            {% if session.member_id %}
+            <a href="/mypage" class="btn-action">{{ session.member_name }}</a>
+            <a
+              href="/logout"
+              class="btn-action"
+              style="color: var(--accent); border-color: var(--accent)"
+              >로그아웃</a
+            >
+            {% else %}
+            <a href="/login" class="btn-action primary">로그인 / 회원가입</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <nav>
+        <!--홈페이지 내에서 클릭시 작동-->
+        <div class="nav-inner">
+          <a href="#" class="nav-item active">🏠홈</a>
+          <a href="/books/local" class="nav-item">🇰🇷국내도서</a>
+          <a href="/books/foreign" class="nav-item">🌍외국도서</a>
+          <a href="/bestseller" class="nav-item"> 🏆베스트셀러</a>
+          <a href="/new-releases" class="nav-item"> ✨신간</a>
+          <a href="/category" class="nav-item">📚카테고리</a>
+          <a
+            href="/inventory"
+            class="nav-item"
+            style="color: var(--accent); font-weight: 700"
+          >
+            📦재고확인</a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <!-- MAIN BANNER -->
+    <div class="banner-section" id="bannerSection">
+      <div class="banner-bg"></div>
+      <div class="banner-grain"></div>
+
+      <!-- 슬라이드 래퍼 -->
+      <div class="slides-wrapper" id="slidesWrapper">
+        <!-- ── Slide 1: 이달의 추천 ── -->
+        <div class="banner-slide active" id="slide-0">
+          <div class="banner-content">
+            <div class="banner-text">
+              <div class="banner-tag">✦ 이달의 추천</div>
+              <div class="banner-title">독서가<br />삶을 바꾼다</div>
+              <div class="banner-sub">
+                2025년 상반기 최고의 화제작<br />지금 바로 만나보세요
+              </div>
+              <a href="/bestseller" class="banner-btn">지금 바로 보기 →</a>
+            </div>
+            <!-- 가운데 Glow Sphere -->
+            <div class="banner-center-anim">
+              <div class="aurora-wrap">
+                <div class="aurora-fade-top"></div>
+                <div class="aurora-fade-bot"></div>
+                <div class="aurora-label">KYUBOBOOK</div>
+                <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="ag1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.6;0"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="45%"
+                        stop-color="#D4A853"
+                        stop-opacity="0.4"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.4;0.85;0.4"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.35;0"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.5;0"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="35%"
+                        stop-color="#C8472B"
+                        stop-opacity="0.35"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.35;0.7;0.35"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.25;0"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#FAF7F2" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.3;0"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="30%"
+                        stop-color="#FAF7F2"
+                        stop-opacity="0.2"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.2;0.5;0.2"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.15;0"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag4" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.45;0"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="50%"
+                        stop-color="#D4A853"
+                        stop-opacity="0.3"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.3;0.65;0.3"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.2;0"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag5" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.4;0"
+                          dur="4.5s"
+                          begin="3.2s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="40%"
+                        stop-color="#C8472B"
+                        stop-opacity="0.25"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.25;0.55;0.25"
+                          dur="4.5s"
+                          begin="3.2s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="100%"
+                        stop-color="#D4A853"
+                        stop-opacity="0"
+                      ></stop>
+                    </linearGradient>
+                  </defs>
+                  <rect
+                    x="10"
+                    y="0"
+                    width="38"
+                    height="300"
+                    fill="url(#ag1)"
+                    rx="19"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="10;22;10"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="38;48;38"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="65"
+                    y="0"
+                    width="28"
+                    height="300"
+                    fill="url(#ag2)"
+                    rx="14"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="65;55;65"
+                      dur="5.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="28;40;28"
+                      dur="5.5s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="108"
+                    y="0"
+                    width="50"
+                    height="300"
+                    fill="url(#ag3)"
+                    rx="25"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="108;95;108"
+                      dur="7s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="50;65;50"
+                      dur="7s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="175"
+                    y="0"
+                    width="32"
+                    height="300"
+                    fill="url(#ag4)"
+                    rx="16"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="175;188;175"
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="32;42;32"
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="222"
+                    y="0"
+                    width="24"
+                    height="300"
+                    fill="url(#ag5)"
+                    rx="12"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="222;212;222"
+                      dur="4.5s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="258"
+                    y="0"
+                    width="44"
+                    height="300"
+                    fill="url(#ag1)"
+                    rx="22"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="258;268;258"
+                      dur="5s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="44;34;44"
+                      dur="5s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                </svg>
+              </div>
+            </div>
+            <div class="banner-books">
+              {% for book in hero_books %}
+              <div
+                class="book-card-mini{% if loop.index == 2 %} tall{% endif %}"
+              >
+                <a
+                  href="{{ url_for('book_detail', book_id=book.BookID) }}"
+                  style="text-decoration: none; color: inherit"
+                >
+                  <div
+                    class="book-cover cover-{{ loop.index }} adult-cover-box {% if book.IsAdult and not session.get('is_adult_verified') %}adult-blur{% endif %}"
+                    {% if loop.index == 2 %}
+                    style="height: 165px"
+                    {%
+                    endif
+                    %}
+                  >
+                    {% if book.ImageURL %}<img
+                      src="{{ book.ImageURL }}"
+                      alt="{{ book.Title }}"
+                    />{% endif %} {{ book.Title | replace(" (리커버판)", "") |
+                    replace(" 2", "<br />2") | safe }}
+                  </div>
+                  {% if book.IsAdult and not session.get('is_adult_verified') %}
+                  <div class="adult-badge">🔞<br />성인인증<br />필요</div>
+                  {% endif %}
+                  <div class="book-info-mini">
+                    {{ book.AuthorName }} · {{ book.PublisherName }}
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Slide 2: 베스트셀러 ── -->
+        <div class="banner-slide" id="slide-1">
+          <div class="banner-content">
+            <div class="banner-text">
+              <div
+                class="banner-tag"
+                style="background: #d4a853; color: #1a1410"
+              >
+                ★ 베스트셀러
+              </div>
+              <div class="banner-title">지금 가장<br />많이 읽는 책</div>
+              <div class="banner-sub">
+                독자들이 선택한 이번 달<br />최고의 베스트셀러
+              </div>
+              <a href="/bestseller" class="banner-btn">베스트셀러 보기 →</a>
+            </div>
+            <!-- 가운데 Glow Sphere -->
+            <div class="banner-center-anim">
+              <div class="aurora-wrap">
+                <div class="aurora-fade-top"></div>
+                <div class="aurora-fade-bot"></div>
+                <div class="aurora-label">KYUBOBOOK</div>
+                <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="ag1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.6;0"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="45%"
+                        stop-color="#D4A853"
+                        stop-opacity="0.4"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.4;0.85;0.4"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.35;0"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.5;0"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="35%"
+                        stop-color="#C8472B"
+                        stop-opacity="0.35"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.35;0.7;0.35"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.25;0"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#FAF7F2" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.3;0"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="30%"
+                        stop-color="#FAF7F2"
+                        stop-opacity="0.2"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.2;0.5;0.2"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.15;0"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag4" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.45;0"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="50%"
+                        stop-color="#D4A853"
+                        stop-opacity="0.3"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.3;0.65;0.3"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.2;0"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag5" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.4;0"
+                          dur="4.5s"
+                          begin="3.2s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="40%"
+                        stop-color="#C8472B"
+                        stop-opacity="0.25"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.25;0.55;0.25"
+                          dur="4.5s"
+                          begin="3.2s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="100%"
+                        stop-color="#D4A853"
+                        stop-opacity="0"
+                      ></stop>
+                    </linearGradient>
+                  </defs>
+                  <rect
+                    x="10"
+                    y="0"
+                    width="38"
+                    height="300"
+                    fill="url(#ag1)"
+                    rx="19"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="10;22;10"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="38;48;38"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="65"
+                    y="0"
+                    width="28"
+                    height="300"
+                    fill="url(#ag2)"
+                    rx="14"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="65;55;65"
+                      dur="5.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="28;40;28"
+                      dur="5.5s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="108"
+                    y="0"
+                    width="50"
+                    height="300"
+                    fill="url(#ag3)"
+                    rx="25"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="108;95;108"
+                      dur="7s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="50;65;50"
+                      dur="7s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="175"
+                    y="0"
+                    width="32"
+                    height="300"
+                    fill="url(#ag4)"
+                    rx="16"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="175;188;175"
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="32;42;32"
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="222"
+                    y="0"
+                    width="24"
+                    height="300"
+                    fill="url(#ag5)"
+                    rx="12"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="222;212;222"
+                      dur="4.5s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="258"
+                    y="0"
+                    width="44"
+                    height="300"
+                    fill="url(#ag1)"
+                    rx="22"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="258;268;258"
+                      dur="5s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="44;34;44"
+                      dur="5s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                </svg>
+              </div>
+            </div>
+            <div class="banner-books">
+              {% for book in bestsellers[:3] %}
+              <div
+                class="book-card-mini{% if loop.index == 2 %} tall{% endif %}"
+              >
+                <a
+                  href="{{ url_for('book_detail', book_id=book.BookID) }}"
+                  style="text-decoration: none; color: inherit"
+                >
+                  <div
+                    class="book-cover adult-cover-box {% if book.IsAdult and not session.get('is_adult_verified') %}adult-blur{% endif %}"
+                    style="height:{% if loop.index==2 %}165{% else %}140{% endif %}px;background:{% if loop.index==1 %}linear-gradient(160deg,#5C3317,#A0522D){% elif loop.index==2 %}linear-gradient(160deg,#1A237E,#3949AB){% else %}linear-gradient(160deg,#1B5E20,#388E3C){% endif %};color:white;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-size:12px;font-weight:600;text-align:center;padding:10px;"
+                  >
+                    {% if book.ImageURL %}<img
+                      src="{{ book.ImageURL }}"
+                      alt="{{ book.Title }}"
+                    />{% endif %} {{ book.Title | replace(" (리커버판)", "") |
+                    replace(" 2", "<br />2") | safe }}
+                  </div>
+                  {% if book.IsAdult and not session.get('is_adult_verified') %}
+                  <div class="adult-badge">🔞<br />성인인증<br />필요</div>
+                  {% endif %}
+                  <div class="book-info-mini">
+                    {{ book.AuthorName }} · {{ book.PublisherName }}
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Slide 3: 신간 ── -->
+        <div class="banner-slide" id="slide-2">
+          <div class="banner-content">
+            <div class="banner-text">
+              <div class="banner-tag" style="background: #40916c; color: white">
+                ✦ 신간 추천
+              </div>
+              <div class="banner-title">따끈따끈<br />새로 나온 책</div>
+              <div class="banner-sub">
+                이번 달 새롭게 출간된<br />주목할 만한 신작들
+              </div>
+              <a href="/new-releases" class="banner-btn">신간 모두 보기 →</a>
+            </div>
+            <!-- 가운데 Glow Sphere -->
+            <div class="banner-center-anim">
+              <div class="aurora-wrap">
+                <div class="aurora-fade-top"></div>
+                <div class="aurora-fade-bot"></div>
+                <div class="aurora-label">KYUBOBOOK</div>
+                <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="ag1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.6;0"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="45%"
+                        stop-color="#D4A853"
+                        stop-opacity="0.4"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.4;0.85;0.4"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.35;0"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.5;0"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="35%"
+                        stop-color="#C8472B"
+                        stop-opacity="0.35"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.35;0.7;0.35"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.25;0"
+                          dur="5.5s"
+                          begin="0.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#FAF7F2" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.3;0"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="30%"
+                        stop-color="#FAF7F2"
+                        stop-opacity="0.2"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.2;0.5;0.2"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.15;0"
+                          dur="7s"
+                          begin="1.8s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag4" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D4A853" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.45;0"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="50%"
+                        stop-color="#D4A853"
+                        stop-opacity="0.3"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.3;0.65;0.3"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop offset="100%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.2;0"
+                          dur="6s"
+                          begin="2.5s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                    </linearGradient>
+                    <linearGradient id="ag5" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#C8472B" stop-opacity="0">
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0;0.4;0"
+                          dur="4.5s"
+                          begin="3.2s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="40%"
+                        stop-color="#C8472B"
+                        stop-opacity="0.25"
+                      >
+                        <animate
+                          attributeName="stop-opacity"
+                          values="0.25;0.55;0.25"
+                          dur="4.5s"
+                          begin="3.2s"
+                          repeatCount="indefinite"
+                        />
+                      </stop>
+                      <stop
+                        offset="100%"
+                        stop-color="#D4A853"
+                        stop-opacity="0"
+                      ></stop>
+                    </linearGradient>
+                  </defs>
+                  <rect
+                    x="10"
+                    y="0"
+                    width="38"
+                    height="300"
+                    fill="url(#ag1)"
+                    rx="19"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="10;22;10"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="38;48;38"
+                      dur="4s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="65"
+                    y="0"
+                    width="28"
+                    height="300"
+                    fill="url(#ag2)"
+                    rx="14"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="65;55;65"
+                      dur="5.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="28;40;28"
+                      dur="5.5s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="108"
+                    y="0"
+                    width="50"
+                    height="300"
+                    fill="url(#ag3)"
+                    rx="25"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="108;95;108"
+                      dur="7s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="50;65;50"
+                      dur="7s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="175"
+                    y="0"
+                    width="32"
+                    height="300"
+                    fill="url(#ag4)"
+                    rx="16"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="175;188;175"
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="32;42;32"
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="222"
+                    y="0"
+                    width="24"
+                    height="300"
+                    fill="url(#ag5)"
+                    rx="12"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="222;212;222"
+                      dur="4.5s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                  <rect
+                    x="258"
+                    y="0"
+                    width="44"
+                    height="300"
+                    fill="url(#ag1)"
+                    rx="22"
+                  >
+                    <animate
+                      attributeName="x"
+                      values="258;268;258"
+                      dur="5s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="width"
+                      values="44;34;44"
+                      dur="5s"
+                      begin="1s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                </svg>
+              </div>
+            </div>
+            <div class="banner-books">
+              {% for book in new_releases[:3] %}
+              <div
+                class="book-card-mini{% if loop.index == 2 %} tall{% endif %}"
+              >
+                <a
+                  href="{{ url_for('book_detail', book_id=book.BookID) }}"
+                  style="text-decoration: none; color: inherit"
+                >
+                  <div
+                    class="book-cover adult-cover-box {% if book.IsAdult and not session.get('is_adult_verified') %}adult-blur{% endif %}"
+                    style="height:{% if loop.index==2 %}165{% else %}140{% endif %}px;background:{% if loop.index==1 %}linear-gradient(160deg,#4A148C,#7B1FA2){% elif loop.index==2 %}linear-gradient(160deg,#B71C1C,#E53935){% else %}linear-gradient(160deg,#004D40,#00897B){% endif %};color:white;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-size:12px;font-weight:600;text-align:center;padding:10px;"
+                  >
+                    {% if book.ImageURL %}<img
+                      src="{{ book.ImageURL }}"
+                      alt="{{ book.Title }}"
+                    />{% endif %} {{ book.Title | replace(" (특별판)", "") |
+                    safe }}
+                  </div>
+                  {% if book.IsAdult and not session.get('is_adult_verified') %}
+                  <div class="adult-badge">🔞<br />성인인증<br />필요</div>
+                  {% endif %}
+                  <div class="book-info-mini">
+                    {{ book.AuthorName }} · {{ book.PublisherName }}
+                  </div>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /slides-wrapper -->
+
+      <!-- 페이지 넘기기 효과 레이어 -->
+      <div class="page-peel" id="pagePeel"></div>
+
+      <div class="banner-indicators" id="bannerDots">
+        <div class="dot active" onclick="goSlide(0)"></div>
+        <div class="dot" onclick="goSlide(1)"></div>
+        <div class="dot" onclick="goSlide(2)"></div>
+      </div>
+
+      <!-- 좌우 화살표 -->
+      <button
+        class="banner-arrow left"
+        onclick="goSlide((currentSlide - 1 + 3) % 3)"
+      >
+        ‹
+      </button>
+      <button
+        class="banner-arrow right"
+        onclick="goSlide((currentSlide + 1) % 3)"
+      >
+        ›
+      </button>
+    </div>
+
+    <!-- TODAY PICKS / 오늘의 시 / 펀딩 -->
+    <div class="today-section">
+      <div class="section" style="padding-top: 40px; padding-bottom: 40px">
+        <div class="today-grid">
+          <!-- TODAY 추천 -->
+          <div class="today-col">
+            <div class="col-header">
+              <div class="col-icon">📚</div>
+              <div>
+                <div class="col-title">TODAY 추천</div>
+                <div class="col-sub">오늘의 에디터 픽</div>
+              </div>
+            </div>
+            <div class="book-rank-list">
+              {% for book in today_picks %} {% set gradients = [
+              'linear-gradient(135deg,#1a3a5c,#2d7dd2);color:white',
+              'linear-gradient(135deg,#4a1942,#9b2335);color:#f8e8f0',
+              'linear-gradient(135deg,#1b4332,#52b788);color:#d8f3dc',
+              'linear-gradient(135deg,#7b3f00,#c77b3a);color:#fff3e0' ] %}
+              <a
+                href="{{ url_for('book_detail', book_id=book.BookID) }}"
+                style="text-decoration: none; color: inherit"
+              >
+                <div class="book-rank-item">
+                  <div class="rank-num">{{ loop.index }}</div>
+                  <div
+                    class="rank-cover"
+                    style="background:{{ gradients[loop.index0] }};width:52px;height:70px;display:flex;align-items:center;justify-content:center;font-size:10px;text-align:center;padding:6px;font-family:'Noto Serif KR',serif;position:relative;overflow:hidden;"
+                  >
+                    {% if book.ImageURL %}<img
+                      src="{{ book.ImageURL }}"
+                      alt="{{ book.Title }}"
+                      style="
+                        position: absolute;
+                        inset: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                      "
+                    />{% endif %} {% if not book.ImageURL %}{{ book.Title |
+                    replace(" (특별판)", "") | replace(" (리커버판)", "") }}{%
+                    endif %}
+                  </div>
+                  <div class="rank-info">
+                    <div class="rank-title">{{ book.Title }}</div>
+                    <div class="rank-author">
+                      {{ book.AuthorName }} · {{ book.PublisherName }}
+                    </div>
+                    <div>
+                      <span class="rank-price"
+                        >{{ "{:,}".format(book.Price) }}원</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="divider-v"></div>
+
+          <!-- 오늘의 시 -->
+          <div class="today-col">
+            <div class="col-header">
+              <div
+                class="col-icon"
+                style="background: var(--gold); color: var(--ink)"
+              >
+                ✦
+              </div>
+              <div>
+                <div class="col-title">오늘의 시</div>
+                <div class="col-sub">하루 한 편, 마음을 담아</div>
+              </div>
+            </div>
+            <div class="poem-box">
+              <div class="poem-title-small">오늘의 시 · 2025.04.22</div>
+              <div class="poem-text">
+                서랍을 열면<br />
+                저녁이 접혀 있다<br />
+                <em>아무도 꺼내지 않은</em><br />
+                그 빛깔로<br /><br />
+                나는 오래<br />
+                거기 손을 넣어 두었다
+              </div>
+              <div class="poem-author">
+                — 한강, 「항강의 서랍에 저녁을 넣어 두었다」에서
+              </div>
+            </div>
+            {% if poem_book %}
+            <a
+              href="{{ url_for('book_detail', book_id=poem_book.BookID) }}"
+              class="poem-book-link"
+            >
+              <div class="poem-book-cover">
+                {% if poem_book.ImageURL %}
+                <img
+                  src="{{ poem_book.ImageURL }}"
+                  alt="{{ poem_book.Title }}"
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 2px;
+                  "
+                />
+                {% else %} 항강의 서랍에 저녁을 넣어 두었다{% endif %}
+              </div>
+              <div class="poem-book-info">
+                <div class="poem-book-name">{{ poem_book.Title }}</div>
+                <div class="poem-book-author">
+                  {{ poem_book.AuthorName }} · {{ poem_book.PublisherName }} ·
+                  {{ "{:,}".format(poem_book.Price) }}원
+                </div>
+              </div>
+              <span style="font-size: 12px; color: var(--muted)">→</span>
+            </a>
+            {% endif %}
+          </div>
+
+          <div class="divider-v"></div>
+
+          <!-- 책 퀴즈 -->
+          <div class="today-col">
+            <div class="col-header">
+              <div class="col-icon" style="background: #4a235a">❓</div>
+              <div>
+                <div class="col-title">명언 퀴즈</div>
+                <div class="col-sub">이 구절은 어떤 책일까요?</div>
+              </div>
+            </div>
+            <div id="quiz-box">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 12px;
+                "
+              >
+                <span
+                  id="quiz-num"
+                  style="
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: var(--muted);
+                    letter-spacing: 0.1em;
+                  "
+                  >QUIZ 1 / 3</span
+                >
+                <span
+                  id="quiz-score"
+                  style="
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: var(--accent);
+                  "
+                  >점수: 0</span
+                >
+              </div>
+              <div
+                id="quiz-quote"
+                style="
+                  background: var(--cream);
+                  border-left: 3px solid #4a235a;
+                  padding: 14px 14px 14px 18px;
+                  font-family: &quot;Noto Serif KR&quot;, serif;
+                  font-size: 13px;
+                  line-height: 2;
+                  color: var(--ink);
+                  margin-bottom: 14px;
+                  min-height: 80px;
+                "
+              ></div>
+              <div
+                id="quiz-options"
+                style="display: flex; flex-direction: column; gap: 8px"
+              ></div>
+              <div
+                id="quiz-result"
+                style="
+                  display: none;
+                  margin-top: 12px;
+                  padding: 10px 14px;
+                  font-size: 12px;
+                  font-weight: 600;
+                "
+              ></div>
+              <button
+                id="quiz-next"
+                onclick="nextQuiz()"
+                style="
+                  display: none;
+                  margin-top: 12px;
+                  width: 100%;
+                  padding: 10px;
+                  background: var(--ink);
+                  color: white;
+                  border: none;
+                  cursor: pointer;
+                  font-size: 12px;
+                  font-family: &quot;Noto Sans KR&quot;, sans-serif;
+                  font-weight: 600;
+                "
+              >
+                다음 문제 →
+              </button>
+              <a
+                id="quiz-book-link"
+                href="#"
+                style="
+                  display: none;
+                  margin-top: 8px;
+                  width: 100%;
+                  padding: 10px;
+                  background: var(--accent);
+                  color: white;
+                  border: none;
+                  cursor: pointer;
+                  font-size: 12px;
+                  font-family: &quot;Noto Sans KR&quot;, sans-serif;
+                  font-weight: 600;
+                  text-decoration: none;
+                  text-align: center;
+                  display: none;
+                "
+                >📖 이 책 보러가기</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- 정서현 담당 기능: 출석체크 이벤트 영역 -->
+<section class="attendance-section">
+  <div class="attendance-box">
+    <div class="attendance-left">
+      <div class="attendance-icon">📅</div>
+      <div>
+        <h3>출석체크 이벤트</h3>
+        <p id="attendance-desc">하루 한 번 출석하고 포인트를 받아보세요!</p>
+      </div>
+    </div>
+
+    <div class="attendance-right">
+  {% if session.member_id %}
+    <button type="button" id="attendance-btn" onclick="checkAttendance()">
+      출석체크하기
+    </button>
+
+    <a href="/attendance" class="attendance-login-btn" style="margin-left:8px;">
+      스탬프판 보기
+    </a>
+  {% else %}
+    <a href="/login" class="attendance-login-btn">
+      로그인하고 출석하기
+    </a>
+  {% endif %}
+</div>
+  </div>
+
+  <div class="attendance-info" id="attendance-info">
+    매일 출석 시 <strong>100P</strong> 지급 ·
+    연속 7일마다 <strong>보너스 500P</strong> 지급 ·
+    <strong>100P = 100원</strong>
+  </div>
+</section>
+
+    <!-- MARQUEE STRIP -->
+    <div class="banner-strip">
+      <div class="strip-track">
+        <span class="strip-item"
+          ><span class="strip-dot"></span>베스트셀러 실시간 업데이트</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>신간 도서 매일 입고</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>오늘 오후 3시 이전 주문 당일
+          출고</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>전 도서 무료배송 (2만원 이상)</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>베스트셀러 실시간 업데이트</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>신간 도서 매일 입고</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>오늘 오후 3시 이전 주문 당일
+          출고</span
+        >
+        <span class="strip-item"
+          ><span class="strip-dot"></span>전 도서 무료배송 (2만원 이상)</span
+        >
+      </div>
+    </div>
+
+    <!-- 베스트셀러 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">
+          월간 <span class="accent">인기서적</span>
+        </div>
+        <a href="#" class="section-more">전체보기 →</a>
+      </div>
+      <div class="books-grid">
+        {% for book in bestsellers %}
+        <a
+          href="{{ url_for('book_detail', book_id=book.BookID) }}"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="book-card">
+            <div class="book-thumb">
+              <div
+                class="book-thumb-inner c{{ loop.index }} {% if book.IsAdult and not session.get('is_adult_verified') %}adult-blur{% endif %}"
+              >
+                {% if book.ImageURL %}<img
+                  src="{{ book.ImageURL }}"
+                  alt="{{ book.Title }}"
+                />{% endif %} {{ book.Title | replace(" (리커버판)", "") |
+                replace("불편한 편의점 2", "불편한<br />편의점 2") |
+                replace("나미야 잡화점의 기적", "나미야<br />잡화점의<br />기적")
+                | safe }}
+              </div>
+              <div class="book-num">{{ loop.index }}</div>
+              {% if loop.index == 1 %}
+              <div class="book-badge">NEW</div>
+              {% endif %} {% if book.IsAdult and not
+              session.get('is_adult_verified') %}
+              <div class="adult-badge">🔞<br />성인인증<br />필요</div>
+              {% endif %}
+            </div>
+            <div class="book-name">{{ book.Title }}</div>
+            <div class="book-writer">
+              {{ book.AuthorName }} · {{ book.PublisherName }}
+            </div>
+            <div class="book-price-row">
+              <span class="disc">10%</span
+              ><span class="price">{{ "{:,}".format(book.Price) }}원</span>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 신간 -->
+    <div
+      style="
+        background: var(--warm-white);
+        border-top: 1px solid var(--light-border);
+        border-bottom: 1px solid var(--light-border);
+      "
+    >
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">
+            이번 주 <span class="accent">화제의 신간</span>
+          </div>
+          <a href="#" class="section-more">더 보기 →</a>
+        </div>
+        <div class="new-grid">
+          {% if featured_new %}
+          <a
+            href="{{ url_for('book_detail', book_id=featured_new.BookID) }}"
+            style="text-decoration: none; color: inherit"
+          >
+            <div class="new-featured" style="position: relative">
+              <div class="new-featured-tag">✦ 이번 주 화제의 신간</div>
+              <div class="adult-cover-center">
+                <div
+                  class="new-cover-big adult-cover-box {% if featured_new.IsAdult and not session.get('is_adult_verified') %}adult-blur{% endif %}"
+                >
+                  {% if featured_new.ImageURL %}
+                  <img
+                    src="{{ featured_new.ImageURL }}"
+                    alt="{{ featured_new.Title }}"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      object-fit: cover;
+                      border-radius: 4px;
+                    "
+                  />
+                  {% else %} {{ featured_new.Title }} {% endif %}
+                </div>
+                {% if featured_new.IsAdult and not
+                session.get('is_adult_verified') %}
+                <div class="adult-badge">🔞<br />성인인증<br />필요</div>
+                {% endif %}
+              </div>
+              <div class="new-featured-title">{{ featured_new.Title }}</div>
+              <div class="new-featured-author">
+                {{ featured_new.AuthorName }} · {{ featured_new.PublisherName }}
+              </div>
+              <div class="new-featured-desc">
+                {{ featured_new.Description or '' }}
+              </div>
+              <div class="new-featured-price">
+                {{ "{:,}".format(featured_new.Price) }}원
+              </div>
+            </div>
+          </a>
+          {% endif %}
+          <div class="new-list">
+            {% set new_gradients = [
+            'background:linear-gradient(135deg,#0D1B2A,#1B4F72);color:#AED6F1;',
+            'background:linear-gradient(135deg,#4A235A,#7D3C98);color:#F4ECF7;',
+            'background:linear-gradient(135deg,#1B4332,#52B788);color:#D8F3DC;',
+            'background:linear-gradient(135deg,#7B3F00,#C77B3A);color:#FFF3E0;',
+            'background:linear-gradient(135deg,#1A3A5C,#2D7DD2);color:#E8F4F8;',
+            'background:linear-gradient(135deg,#B5451B,#E8762D);color:#FFF5EE;'
+            ] %} {% for book in new_releases %}
+            <a
+              href="{{ url_for('book_detail', book_id=book.BookID) }}"
+              style="text-decoration: none; color: inherit"
+            >
+              <div class="new-item" style="position: relative">
+                <div class="adult-cover-center">
+                  <div
+                    class="new-item-cover adult-cover-box {% if book.IsAdult and not session.get('is_adult_verified') %}adult-blur{% endif %}"
+                    style="{{ new_gradients[loop.index0] }}"
+                  >
+                    {% if book.ImageURL %}<img
+                      src="{{ book.ImageURL }}"
+                      alt="{{ book.Title }}"
+                    />{% endif %} {% if not book.ImageURL %}{{ book.Title }}{%
+                    endif %}
+                  </div>
+                  {% if book.IsAdult and not session.get('is_adult_verified') %}
+                  <div class="adult-badge">🔞<br />성인인증<br />필요</div>
+                  {% endif %}
+                </div>
+                <div class="new-item-info">
+                  <div class="new-item-cat">{{ book.Genre }}</div>
+                  <div class="new-item-title">{{ book.Title }}</div>
+                  <div class="new-item-author">
+                    {{ book.AuthorName }} · {{ book.PublisherName }}
+                  </div>
+                  <div class="new-item-price">
+                    {{ "{:,}".format(book.Price) }}원
+                  </div>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div>
+            <div class="footer-logo">KYUBO<span>BOOK</span></div>
+            <div class="footer-desc">
+              온라인 주문 및 재고관리<br />시스템 기반 KYUBOBOOK 스마트 서점
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4>고객 서비스</h4>
+            <a href="/notice">공지사항</a>
+            <a href="/faq">자주 묻는 질문</a>
+            <a href="/shipping">배송 안내</a>
+          </div>
+          <div class="footer-col">
+            <h4>회원 서비스</h4>
+            <a href="/mypage">마이페이지</a>
+          </div>
+          <div class="footer-col">
+            <h4>회사 정보</h4>
+            <a href="/about">회사 소개</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2025 KYUBOBOOK. All rights reserved. | PC 버전</span>
+          <div>
+            <a href="#">이용약관</a>
+            <a href="#">개인정보처리방침</a>
+            <a href="#">사업자정보</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- 로그인 모달 -->
+    <div
+      class="modal-overlay"
+      id="loginModal"
+      onclick="if (event.target === this) closeModal();"
+    >
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-title">dddd</div>
+        <div class="modal-sub">독서의 즐거움을 함께해요</div>
+        <div class="modal-tabs">
+          <div class="modal-tab active" onclick="switchTab(this, 'login')">
+            로그인
+          </div>
+          <div class="modal-tab" onclick="switchTab(this, 'register')">
+            회원가입
+          </div>
+        </div>
+        <div id="tab-login">
+          <div class="form-group">
+            <label class="form-label">이메일</label>
+            <input
+              type="email"
+              class="form-input"
+              placeholder="example@email.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">비밀번호</label>
+            <input
+              type="password"
+              class="form-input"
+              placeholder="비밀번호를 입력하세요"
+            />
+          </div>
+          <button class="form-submit">로그인</button>
+          <div class="form-links">
+            <a href="#" class="form-link">이메일 찾기</a>
+            <a href="#" class="form-link">비밀번호 찾기</a>
+          </div>
+          <div class="divider-or"><span>또는</span></div>
+          <button class="social-btn kakao">💛 카카오로 로그인</button>
+          <button class="social-btn">🔵 네이버로 로그인</button>
+        </div>
+        <div id="tab-register" style="display: none">
+          <div class="form-group">
+            <label class="form-label">이름</label>
+            <input
+              type="text"
+              class="form-input"
+              placeholder="이름을 입력하세요"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">이메일</label>
+            <input
+              type="email"
+              class="form-input"
+              placeholder="example@email.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">비밀번호</label>
+            <input
+              type="password"
+              class="form-input"
+              placeholder="8자 이상 입력하세요"
+            />
+          </div>
+          <button class="form-submit">회원가입</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ─── 퀴즈 ───
+      // DB에서 받은 실제 BookID 매핑
+      const _quizBookIds = {{ quiz_book_ids | tojson }};
+      function _bid(title) { return _quizBookIds[title] || 0; }
+
+      const allQuizData = [
+        { quote: "사막이 아름다운 건, 어딘가에 우물을 숨기고 있기 때문이야.", answer: "어린 왕자", options: ["어린 왕자", "데미안", "파친코", "아몬드"], bookId: _bid("어린 왕자"), author: "생텍쥐페리" },
+        { quote: "나는 나를 파괴할 권리가 있다.", answer: "나는 나를 파괴할 권리가 있다", options: ["채식주의자", "아몬드", "나는 나를 파괴할 권리가 있다", "데미안"], bookId: _bid("나는 나를 파괴할 권리가 있다"), author: "김영하" },
+        { quote: "가장 어두운 밤도 끝날 것이고, 태양은 떠오를 것이다.", answer: "레 미제라블", options: ["데미안", "레 미제라블", "파친코", "어린 왕자"], bookId: _bid("레 미제라블"), author: "빅토르 위고" },
+        { quote: "새는 알을 깨고 나온다. 알은 세계다. 태어나려는 자는 하나의 세계를 깨뜨려야 한다.", answer: "데미안", options: ["어린 왕자", "데미안", "아몬드", "채식주의자"], bookId: _bid("데미안"), author: "헤르만 헤세" },
+        { quote: "꽃들은 가시가 있음에도 아름답다.", answer: "어린 왕자", options: ["어린 왕자", "채식주의자", "아몬드", "파친코"], bookId: _bid("어린 왕자"), author: "생텍쥐페리" },
+        { quote: "나는 괜찮지 않아도 괜찮다.", answer: "아몬드", options: ["아몬드", "채식주의자", "데미안", "레 미제라블"], bookId: _bid("아몬드"), author: "손원평" },
+        { quote: "역사는 승자의 기록이다. 그러나 삶은 패자의 것이기도 하다.", answer: "파친코", options: ["파친코", "레 미제라블", "데미안", "어린 왕자"], bookId: _bid("파친코"), author: "이민진" },
+        { quote: "고통은 언제나 어떤 의미를 가지고 있다. 그것이 무의미해 보일 때도.", answer: "데미안", options: ["아몬드", "채식주의자", "데미안", "파친코"], bookId: _bid("데미안"), author: "헤르만 헤세" },
+        { quote: "나는 식물이 되고 싶었다. 아무것도 먹지 않아도 되는.", answer: "채식주의자", options: ["채식주의자", "아몬드", "어린 왕자", "레 미제라블"], bookId: _bid("채식주의자"), author: "한강" },
+        { quote: "눈으로 봐서는 중요한 것을 볼 수 없어. 마음으로 봐야 해.", answer: "어린 왕자", options: ["어린 왕자", "데미안", "아몬드", "파친코"], bookId: _bid("어린 왕자"), author: "생텍쥐페리" },
+        { quote: "사랑한다는 것은 서로를 바라보는 것이 아니라 함께 같은 방향을 바라보는 것이다.", answer: "어린 왕자", options: ["어린 왕자", "레 미제라블", "데미안", "채식주의자"], bookId: _bid("어린 왕자"), author: "생텍쥐페리" },
+        { quote: "나는 네가 필요해. 너도 나를 필요로 해. 우리는 서로에게 필요한 존재야.", answer: "아몬드", options: ["아몬드", "파친코", "어린 왕자", "채식주의자"], bookId: _bid("아몬드"), author: "손원평" },
+        { quote: "삶이 있는 곳에 희망이 있다.", answer: "레 미제라블", options: ["레 미제라블", "데미안", "파친코", "아몬드"], bookId: _bid("레 미제라블"), author: "빅토르 위고" },
+        { quote: "나를 죽이지 못하는 것은 나를 더 강하게 만든다.", answer: "데미안", options: ["데미안", "채식주의자", "아몬드", "어린 왕자"], bookId: _bid("데미안"), author: "헤르만 헤세" },
+        { quote: "고향이란 어릴 때 살던 곳이 아니라, 죽어서 돌아가고 싶은 곳이다.", answer: "파친코", options: ["파친코", "레 미제라블", "채식주의자", "아몬드"], bookId: _bid("파친코"), author: "이민진" },
+        { quote: "우리가 걷는 이 길의 끝에 무엇이 있는지 모르지만, 함께라면 괜찮다.", answer: "채식주의자", options: ["채식주의자", "아몬드", "파친코", "데미안"], bookId: _bid("채식주의자"), author: "한강" },
+        { quote: "모든 어른은 한때 아이였다. 하지만 그것을 기억하는 어른은 드물다.", answer: "어린 왕자", options: ["어린 왕자", "레 미제라블", "아몬드", "데미안"], bookId: _bid("어린 왕자"), author: "생텍쥐페리" },
+        { quote: "진정한 여행은 새로운 풍경을 보는 것이 아니라 새로운 눈을 갖는 것이다.", answer: "레 미제라블", options: ["레 미제라블", "파친코", "데미안", "어린 왕자"], bookId: _bid("레 미제라블"), author: "빅토르 위고" },
+        { quote: "감정이 없다는 것은 자유가 아니라 또 다른 감옥이다.", answer: "아몬드", options: ["아몬드", "채식주의자", "데미안", "파친코"], bookId: _bid("아몬드"), author: "손원평" },
+        { quote: "우리는 모두 각자의 방식으로 살아남는다.", answer: "파친코", options: ["파친코", "아몬드", "레 미제라블", "채식주의자"], bookId: _bid("파친코"), author: "이민진" },
+        { quote: "네 장미꽃을 그토록 소중하게 만드는 것은 그 꽃을 위해 네가 바친 시간이야.", answer: "어린 왕자", options: ["어린 왕자", "아몬드", "데미안", "파친코"], bookId: _bid("어린 왕자"), author: "생텍쥐페리" },
+        { quote: "자기 자신을 사랑하는 것이 평생의 로맨스다.", answer: "데미안", options: ["데미안", "어린 왕자", "채식주의자", "레 미제라블"], bookId: _bid("데미안"), author: "헤르만 헤세" },
+        { quote: "폭풍이 지나간 자리에 남은 것들이 진짜다.", answer: "채식주의자", options: ["채식주의자", "파친코", "아몬드", "데미안"], bookId: _bid("채식주의자"), author: "한강" },
+        { quote: "행복은 찾는 것이 아니라 만드는 것이다.", answer: "레 미제라블", options: ["레 미제라블", "어린 왕자", "아몬드", "파친코"], bookId: _bid("레 미제라블"), author: "빅토르 위고" },
+        { quote: "나는 내 안에 있는 또 다른 나를 만났다.", answer: "데미안", options: ["데미안", "아몬드", "파친코", "채식주의자"], bookId: _bid("데미안"), author: "헤르만 헤세" },
+        { quote: "기억은 우리가 가진 가장 불완전한 기록이다.", answer: "파친코", options: ["파친코", "채식주의자", "레 미제라블", "어린 왕자"], bookId: _bid("파친코"), author: "이민진" },
+        { quote: "슬픔은 나눌수록 줄어들고, 기쁨은 나눌수록 늘어난다.", answer: "아몬드", options: ["아몬드", "데미안", "어린 왕자", "레 미제라블"], bookId: _bid("아몬드"), author: "손원평" },
+        { quote: "인간은 이해받기 위해 태어난 것이 아니라 사랑받기 위해 태어났다.", answer: "레 미제라블", options: ["레 미제라블", "아몬드", "파친코", "데미안"], bookId: _bid("레 미제라블"), author: "빅토르 위고" },
+        { quote: "나는 고기를 먹지 않겠어. 그것이 내가 선택한 삶이야.", answer: "채식주의자", options: ["채식주의자", "어린 왕자", "아몬드", "파친코"], bookId: _bid("채식주의자"), author: "한강" },
+        { quote: "길을 잃어야 비로소 새로운 길을 찾을 수 있다.", answer: "데미안", options: ["데미안", "레 미제라블", "채식주의자", "어린 왕자"], bookId: _bid("데미안"), author: "헤르만 헤세" }
+      ];
+
+      // 랜덤으로 3문제 뽑기
+      function getRandomQuiz() {
+        const shuffled = [...allQuizData].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, 3);
+      }
+
+      let quizData = getRandomQuiz();
+      let currentQ = 0;
+      let score = 0;
+      let answered = false;
+
+      function loadQuiz() {
+        answered = false;
+        const q = quizData[currentQ];
+        document.getElementById('quiz-num').textContent = 'QUIZ ' + (currentQ+1) + ' / ' + quizData.length;
+        document.getElementById('quiz-quote').innerHTML = '"' + q.quote + '"<div style="margin-top:10px;font-size:11px;color:var(--muted);">— ' + q.author + '</div>';
+        document.getElementById('quiz-result').style.display = 'none';
+        document.getElementById('quiz-next').style.display = 'none';
+        document.getElementById('quiz-book-link').style.display = 'none';
+
+        const optBox = document.getElementById('quiz-options');
+        optBox.innerHTML = '';
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.textContent = ['①','②','③','④'][i] + '  ' + opt;
+          btn.style.cssText = 'padding:9px 12px;border:1.5px solid var(--light-border);background:white;cursor:pointer;font-size:12px;font-family:Noto Sans KR,sans-serif;text-align:left;transition:all 0.2s;';
+          btn.onmouseover = () => { if(!answered) btn.style.background = 'var(--hover-bg)'; };
+          btn.onmouseout  = () => { if(!answered) btn.style.background = 'white'; };
+          btn.onclick = () => checkAnswer(opt, btn);
+          optBox.appendChild(btn);
+        });
+      }
+
+      function checkAnswer(selected, btn) {
+        if (answered) return;
+        answered = true;
+        const q = quizData[currentQ];
+        const resultEl = document.getElementById('quiz-result');
+        const allBtns = document.getElementById('quiz-options').querySelectorAll('button');
+
+        allBtns.forEach(b => {
+          b.style.cursor = 'default';
+          if (b.textContent.includes(q.answer)) {
+            b.style.background = '#E8F5E9';
+            b.style.borderColor = '#4CAF50';
+            b.style.color = '#2E7D32';
+            b.style.fontWeight = '700';
+          }
+        });
+
+        if (selected === q.answer) {
+          score++;
+          document.getElementById('quiz-score').textContent = '점수: ' + score;
+          btn.style.background = '#E8F5E9';
+          btn.style.borderColor = '#4CAF50';
+          resultEl.style.cssText = 'display:block;margin-top:12px;padding:10px 14px;font-size:12px;font-weight:600;background:#E8F5E9;color:#2E7D32;border-left:3px solid #4CAF50;';
+          resultEl.textContent = '🎉 정답! 정답입니다!';
+          // 책 링크 보여주기
+          const link = document.getElementById('quiz-book-link');
+          link.href = '/book/' + q.bookId;
+          link.style.display = 'block';
+        } else {
+          btn.style.background = '#FFEBEE';
+          btn.style.borderColor = '#EF5350';
+          btn.style.color = '#C62828';
+          resultEl.style.cssText = 'display:block;margin-top:12px;padding:10px 14px;font-size:12px;font-weight:600;background:#FFEBEE;color:#C62828;border-left:3px solid #EF5350;';
+          resultEl.textContent = '❌ 오답! 정답은 [' + q.answer + '] 이었어요.';
+        }
+
+        if (currentQ < quizData.length - 1) {
+          document.getElementById('quiz-next').style.display = 'block';
+        } else {
+          // 마지막 문제
+          setTimeout(() => showFinalScore(), 1200);
+        }
+      }
+
+      function nextQuiz() {
+        currentQ++;
+        loadQuiz();
+      }
+
+      function showFinalScore() {
+        document.getElementById('quiz-box').innerHTML = `
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:36px;margin-bottom:12px;">🏆</div>
+            <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;margin-bottom:8px;">퀴즈 완료!</div>
+            <div style="font-size:28px;font-weight:700;color:var(--accent);margin-bottom:8px;">${score} / ${quizData.length}</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">${score === quizData.length ? '완벽해요! 🎉' : score >= 2 ? '잘 하셨어요! 👍' : '다시 도전해보세요! 💪'}</div>
+            <button onclick="restartQuiz()" style="padding:10px 24px;background:var(--ink);color:white;border:none;cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:600;">다시 풀기</button>
+          </div>
+        `;
+      }
+
+      function restartQuiz() {
+        quizData = getRandomQuiz(); // 다시 랜덤 뽑기
+        currentQ = 0;
+        score = 0;
+        document.getElementById('quiz-box').innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <span id="quiz-num" style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.1em;">QUIZ 1 / 3</span>
+            <span id="quiz-score" style="font-size:11px;font-weight:700;color:var(--accent);">점수: 0</span>
+          </div>
+          <div id="quiz-quote" style="background:var(--cream);border-left:3px solid #4A235A;padding:14px 14px 14px 18px;font-family:'Noto Serif KR',serif;font-size:13px;line-height:2;color:var(--ink);margin-bottom:14px;min-height:80px;"></div>
+          <div id="quiz-options" style="display:flex;flex-direction:column;gap:8px;"></div>
+          <div id="quiz-result" style="display:none;margin-top:12px;padding:10px 14px;font-size:12px;font-weight:600;"></div>
+          <button id="quiz-next" onclick="nextQuiz()" style="display:none;margin-top:12px;width:100%;padding:10px;background:var(--ink);color:white;border:none;cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:600;">다음 문제 →</button>
+          <a id="quiz-book-link" href="#" style="display:none;margin-top:8px;width:100%;padding:10px;background:var(--accent);color:white;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:600;text-decoration:none;text-align:center;">📖 이 책 보러가기</a>
+        `;
+        loadQuiz();
+      }
+
+      // 페이지 로드시 퀴즈 시작
+      window.addEventListener('DOMContentLoaded', loadQuiz);
+
+      function openModal() {
+        document.getElementById('loginModal').classList.add('open');
+      }
+      function closeModal() {
+        document.getElementById('loginModal').classList.remove('open');
+      }
+      function switchTab(el, tab) {
+        document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
+      }
+      function showCart() {
+        alert('🛒 장바구니 페이지로 이동합니다');
+      }
+
+      /* ── 배너 슬라이드 + 타이핑 효과 ── */
+      let currentSlide = 0;
+      let slideTimer   = null;
+      let typeTimer    = null;
+      const WAIT_AFTER_ANIM = 3000;
+
+      document.querySelectorAll('.banner-title').forEach(t => {
+        t.dataset.orig = t.innerHTML;
+      });
+
+      function clearSlideTimers() {
+        clearTimeout(slideTimer);
+        clearTimeout(typeTimer);
+      }
+
+      function startTypewriter(slideEl) {
+        const title = slideEl.querySelector('.banner-title');
+        if (!title) return;
+        clearTimeout(typeTimer);
+        const original = title.dataset.orig;
+        const chars = [...original.replace(/<br\s*\/?>/gi, '\n')];
+        let i = 0;
+        title.innerHTML = '<span class="cursor"></span>';
+        (function tick() {
+          if (i >= chars.length) {
+            title.innerHTML = original + '<span class="cursor"></span>';
+            return;
+          }
+          title.innerHTML = chars.slice(0, i + 1).join('').replace(/\n/g, '<br>') + '<span class="cursor"></span>';
+          i++;
+          typeTimer = setTimeout(tick, 75);
+        })();
+      }
+
+      function scheduleNext() {
+        clearTimeout(slideTimer);
+        slideTimer = setTimeout(() => goSlide((currentSlide + 1) % 3), WAIT_AFTER_ANIM);
+      }
+
+      function goSlide(next) {
+        if (next === currentSlide) return;
+        clearSlideTimers();
+        const slides = document.querySelectorAll('.banner-slide');
+        const dots   = document.querySelectorAll('#bannerDots .dot');
+        const outEl  = slides[currentSlide];
+        const inEl   = slides[next];
+
+        outEl.classList.add('slide-out');
+        inEl.classList.add('slide-in');
+
+        outEl.addEventListener('animationend', function h(e) {
+          if (e.target !== outEl || e.animationName !== 'pageFlipOut') return;
+          outEl.classList.remove('active', 'slide-out');
+          outEl.removeEventListener('animationend', h);
+        });
+
+        inEl.addEventListener('animationend', function h(e) {
+          if (e.target !== inEl || e.animationName !== 'pageFlipIn') return;
+          inEl.classList.add('active');
+          inEl.classList.remove('slide-in');
+          inEl.removeEventListener('animationend', h);
+          startTypewriter(inEl);
+          scheduleNext();
+        });
+
+        dots[currentSlide].classList.remove('active');
+        dots[next].classList.add('active');
+        currentSlide = next;
+      }
+
+      (function initFirst() {
+        const firstSlide = document.querySelector('.banner-slide.active');
+        if (firstSlide) startTypewriter(firstSlide);
+        scheduleNext();
+      })();
+
+      /* ── 검색 자동완성 ── */
+      (function() {
+        const input = document.getElementById('search-input');
+        const box   = document.getElementById('suggest-box');
+        let timer   = null;
+        let activeIdx = -1;
+
+        /* CSS 주입 */
+        const style = document.createElement('style');
+        style.textContent = `
+          #suggest-box {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 58px;
+            right: 50px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(-8px) scaleY(0.96);
+            transform-origin: top;
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+          }
+          #suggest-box.open {
+            opacity: 1;
+            transform: translateY(0) scaleY(1);
+            pointer-events: all;
+          }
+          .suggest-header {
+            padding: 8px 16px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #aaa;
+            border-bottom: 1px solid #f4f4f4;
+          }
+          .suggest-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            cursor: pointer;
+            transition: background 0.12s;
+            font-size: 14px;
+            color: #222;
+            border-bottom: 1px solid #f8f8f8;
+            animation: suggestFadeIn 0.15s ease both;
+          }
+          .suggest-item:last-child { border-bottom: none; }
+          .suggest-item:hover, .suggest-item.active { background: #fdf7f0; }
+          .suggest-item .s-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f2ece4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            color: #c8471a;
+          }
+          .suggest-item .s-text { flex: 1; font-weight: 500; }
+          .suggest-item .s-type {
+            font-size: 11px;
+            color: #aaa;
+            background: #f4f4f4;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 400;
+          }
+          @keyframes suggestFadeIn {
+            from { opacity: 0; transform: translateX(-6px); }
+            to   { opacity: 1; transform: none; }
+          }
+        `;
+        document.head.appendChild(style);
+
+        /* ── 검색 기록 (localStorage) ── */
+        const _currentUser = '{{ session.member_id | default("guest") }}';
+        const HISTORY_KEY  = 'booknest_search_history_' + _currentUser;
+        const MAX_HISTORY = 8;
+
+        function getHistory() {
+          try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+          catch { return []; }
+        }
+        function saveHistory(q) {
+          let hist = getHistory().filter(h => h !== q);
+          hist.unshift(q);
+          hist = hist.slice(0, MAX_HISTORY);
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+        }
+        function deleteHistory(q, e) {
+          e.stopPropagation();
+          const hist = getHistory().filter(h => h !== q);
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+          showHistoryBox();
+        }
+        function clearAllHistory(e) {
+          e.stopPropagation();
+          localStorage.removeItem(HISTORY_KEY);
+          hideBox();
+        }
+
+        function showHistoryBox() {
+          const hist = getHistory();
+          if (!hist.length) { hideBox(); return; }
+          box.innerHTML =
+            `<div class="suggest-header" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>🕐 최근 검색어</span>
+              <span onmousedown="window._clearAll(event)"
+                    style="font-size:11px;color:#aaa;cursor:pointer;padding:2px 6px;
+                           border-radius:4px;" onmouseover="this.style.color='#c8471a'"
+                    onmouseout="this.style.color='#aaa'">전체 삭제</span>
+            </div>` +
+            hist.map((q, i) => `
+              <div class="suggest-item" data-idx="${i}" data-text="${q.replace(/"/g,'&quot;')}"
+                   style="animation-delay:${i * 0.03}s"
+                   onmousedown="window._selectSuggest('${q.replace(/'/g,"\\'")}', null)">
+                <div class="s-icon" style="background:#f0f0f0;color:#888;">🕐</div>
+                <div class="s-text" style="color:#444;">${q}</div>
+                <div onmousedown="window._deleteHistory('${q.replace(/'/g,"\\'")}', event)"
+                     style="font-size:16px;color:#ccc;padding:0 4px;cursor:pointer;line-height:1;"
+                     onmouseover="this.style.color='#e74c3c'"
+                     onmouseout="this.style.color='#ccc'">✕</div>
+              </div>`).join('');
+          box.classList.add('open');
+          activeIdx = -1;
+        }
+
+        window._deleteHistory = deleteHistory;
+        window._clearAll = clearAllHistory;
+
+        function showBox(list) {
+          if (!list.length) { hideBox(); return; }
+          box.innerHTML =
+            `<div class="suggest-header">📚 검색 추천</div>` +
+            list.map((item, i) => `
+              <div class="suggest-item" data-idx="${i}" data-text="${item.text.replace(/"/g,'&quot;')}"
+                   style="animation-delay:${i * 0.03}s"
+                   onmousedown="window._selectSuggest('${item.text.replace(/'/g,"\\'")}', ${item.book_id || 'null'})">
+                <div class="s-icon">📖</div>
+                <div class="s-text">${item.text}</div>
+                <div class="s-type">바로가기 →</div>
+              </div>`).join('');
+          box.classList.add('open');
+          activeIdx = -1;
+        }
+
+        function hideBox() {
+          box.classList.remove('open');
+          activeIdx = -1;
+        }
+
+        window._selectSuggest = function(text, bookId) {
+          saveHistory(text);   // ✅ 검색 기록 저장
+          hideBox();
+          if (bookId) {
+            window.location.href = '/book/' + bookId;
+          } else {
+            input.value = text;
+            input.closest('form').submit();
+          }
+        };
+
+        input.addEventListener('input', function() {
+          clearTimeout(timer);
+          const q = this.value.trim();
+          if (!q) { showHistoryBox(); return; }   // 빈칸이면 기록 표시
+          timer = setTimeout(() => {
+            fetch('/api/search-suggest?q=' + encodeURIComponent(q))
+              .then(r => r.json())
+              .then(showBox)
+              .catch(hideBox);
+          }, 180);
+        });
+
+        /* 키보드 탐색 */
+        input.addEventListener('keydown', function(e) {
+          // 엔터 시 기록 저장
+          if (e.key === 'Enter' && this.value.trim()) {
+            saveHistory(this.value.trim());
+          }
+          const items = box.querySelectorAll('.suggest-item');
+          if (!items.length) return;
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            items[activeIdx]?.classList.remove('active');
+            activeIdx = (activeIdx + 1) % items.length;
+            items[activeIdx].classList.add('active');
+            input.value = items[activeIdx].dataset.text;
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            items[activeIdx]?.classList.remove('active');
+            activeIdx = (activeIdx - 1 + items.length) % items.length;
+            items[activeIdx].classList.add('active');
+            input.value = items[activeIdx].dataset.text;
+          } else if (e.key === 'Escape') {
+            hideBox();
+          }
+        });
+
+        // 포커스 시 기록 or 추천 표시
+        input.addEventListener('focus', function() {
+          const q = this.value.trim();
+          if (!q) {
+            showHistoryBox();
+          } else if (box.children.length > 1) {
+            box.classList.add('open');
+          }
+        });
+
+        document.addEventListener('click', function(e) {
+          if (!input.contains(e.target) && !box.contains(e.target)) hideBox();
+        });
+      })();
+
+//  정서현 담당 기능: 출석체크 이벤트 JavaScript
+function checkAttendance() {
+  const btn = document.getElementById('attendance-btn');
+  const info = document.getElementById('attendance-info');
+
+  if (!btn) return;
+
+  btn.disabled = true;
+  btn.textContent = '처리 중...';
+
+  fetch('/attendance/check', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      let message = `✅ 오늘 출석 완료! +${data.base_point}P`;
+      if (data.bonus_point > 0) {
+        message += `\n🎉 연속 ${data.streak}일 달성! 보너스 +${data.bonus_point}P`;
+      }
+      message += `\n\n현재 보유 포인트: ${data.point}P`;
+      alert(message);
+      btn.textContent = '오늘 출석 완료';
+      btn.disabled = true;
+      if (info) {
+        info.innerHTML = `
+          현재 연속 출석 <strong>${data.streak}일</strong> ·
+          오늘 획득 포인트 <strong>${data.total_gain}P</strong> ·
+          보유 포인트 <strong>${data.point}P</strong>`;
+      }
+    } else {
+      alert(data.message || '출석체크에 실패했습니다.');
+      if (data.checked_today) {
+        btn.textContent = '오늘 출석 완료';
+        btn.disabled = true;
+        if (info) {
+          info.innerHTML = `오늘 이미 출석했습니다 · 연속 <strong>${data.streak || 0}일</strong> · 보유 포인트 <strong>${data.point || 0}P</strong>`;
+        }
+      } else {
+        btn.textContent = '출석체크하기';
+        btn.disabled = false;
+      }
+    }
+  })
+  .catch(() => {
+    alert('서버 오류가 발생했습니다.');
+    btn.textContent = '출석체크하기';
+    btn.disabled = false;
+  });
+}
+
+function loadAttendanceStatus() {
+  const btn = document.getElementById('attendance-btn');
+  const info = document.getElementById('attendance-info');
+  if (!btn) return;
+
+  fetch('/attendance/status')
+    .then(res => res.json())
+    .then(data => {
+      if (!data.logged_in) return;
+      if (data.checked_today) {
+        btn.textContent = '오늘 출석 완료';
+        btn.disabled = true;
+        if (info) {
+          info.innerHTML = `오늘 이미 출석했습니다 · 연속 <strong>${data.streak}일</strong> · 보유 포인트 <strong>${data.point}P</strong>`;
+        }
+      } else {
+        btn.textContent = '출석체크하기';
+        btn.disabled = false;
+        if (info) {
+          info.innerHTML = `매일 출석 시 <strong>100P</strong> 지급 · 연속 7일마다 <strong>보너스 500P</strong> 지급 · <strong>100P = 100원</strong> · 현재 포인트 <strong>${data.point}P</strong>`;
+        }
+      }
+    })
+    .catch(() => console.log('출석 상태 조회 실패'));
+}
+
+document.addEventListener('DOMContentLoaded', loadAttendanceStatus);
+    </script>
+  </body>
+</html>

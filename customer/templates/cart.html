@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>장바구니 - KYUBOBOOK</title>
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FEFCF8;
+    --ink: #1A1410;
+    --accent: #C8472B;
+    --gold: #D4A853;
+    --muted: #8C7B6E;
+    --light-border: #E8E0D5;
+    --hover-bg: #F2EDE5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--warm-white);
+    border-bottom: 2px solid var(--ink);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(26,20,16,0.08);
+  }
+  .header-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .header-top {
+    display: grid;
+    grid-template-columns: auto minmax(520px, 600px) auto;
+    align-items: center;
+    gap: 28px;
+    padding: 14px 0 10px;
+  }
+  .logo { font-size: 26px; font-weight: 700; color: var(--ink); text-decoration: none; flex-shrink: 0; }
+  .logo span { color: var(--accent); }
+  .search-wrap { flex: 1; display: flex; max-width: 600px; border: 1.5px solid var(--ink); background: white; overflow: hidden; }
+  .search-wrap select { border: none; border-right: 1.5px solid var(--ink); background: var(--hover-bg); padding: 0 12px; font-size: 12px; font-family: 'Malgun Gothic', sans-serif; cursor: pointer; outline: none; }
+  .search-wrap input { flex: 1; border: none; padding: 10px 14px; font-size: 13px; font-family: 'Malgun Gothic', sans-serif; outline: none; }
+  .search-wrap button { background: var(--ink); color: white; border: none; padding: 0 18px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+  .search-wrap button:hover { background: var(--accent); }
+  .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .btn-action { padding: 7px 14px; font-size: 12px; font-family: 'Malgun Gothic', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; transition: all 0.2s; }
+  .btn-action:hover { background: var(--ink); color: white; }
+  .btn-action.primary { background: var(--ink); color: white; }
+  .btn-action.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .icon-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--light-border); background: transparent; cursor: pointer; font-size: 16px; transition: all 0.2s; text-decoration: none; color: var(--ink); position: relative; }
+  .icon-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+  .badge { position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  nav { border-top: 1px solid var(--light-border); }
+  .nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: center;
+}
+.nav-item {
+  padding: 12px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s;
+  white-space: nowrap;
+  text-align: center;
+  justify-self: center;
+}
+  .nav-item:hover { color: var(--accent); }
+
+  /* ─── 진행단계 ─── */
+  .steps-wrap {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--light-border);
+    padding: 16px 0;
+  }
+  .steps {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .step.active { color: var(--ink); font-weight: 700; }
+  .step-num {
+    width: 26px; height: 26px;
+    border: 2px solid var(--light-border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .step.active .step-num { background: var(--ink); color: white; border-color: var(--ink); }
+  .step.done .step-num { background: var(--accent); color: white; border-color: var(--accent); }
+  .step.done { color: var(--muted); }
+  .step-line { width: 60px; height: 1px; background: var(--light-border); margin: 0 8px; }
+
+  /* ─── LAYOUT ─── */
+  .page-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cart-count {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* ─── 장바구니 목록 ─── */
+  .cart-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--warm-white);
+    border: 1.5px solid var(--ink);
+    border-bottom: none;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .cart-header label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .cart-header input[type="checkbox"] { accent-color: var(--ink); width: 16px; height: 16px; cursor: pointer; }
+  .select-all-label { color: var(--ink); font-weight: 700; }
+  .btn-delete-selected {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--light-border);
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Malgun Gothic', sans-serif;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .btn-delete-selected:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cart-list { border: 1.5px solid var(--ink); border-top: none; }
+
+  .cart-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--light-border);
+    background: white;
+    transition: background 0.2s;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item:hover { background: var(--hover-bg); }
+  .cart-item input[type="checkbox"] { accent-color: var(--ink); width: 16px; height: 16px; cursor: pointer; margin-top: 4px; flex-shrink: 0; }
+
+  .item-cover {
+    width: 70px; height: 95px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; text-align: center; padding: 8px;
+    line-height: 1.5;
+    box-shadow: 2px 3px 10px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.2s;
+    overflow: hidden;
+  }
+  .item-cover:hover { transform: scale(1.03); }
+  .item-cover img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+
+  .item-info { flex: 1; min-width: 0; }
+  .item-category { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .item-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; cursor: pointer; }
+  .item-title:hover { text-decoration: underline; }
+  .item-author { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+  .item-price-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+  .item-disc { font-size: 12px; font-weight: 700; color: var(--accent); }
+  .item-price { font-size: 16px; font-weight: 700; }
+  .item-orig { font-size: 11px; color: var(--muted); text-decoration: line-through; }
+
+  .qty-wrap { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--light-border); width: fit-content; }
+  .qty-btn { width: 30px; height: 30px; border: none; background: var(--hover-bg); cursor: pointer; font-size: 14px; transition: background 0.2s; }
+  .qty-btn:hover { background: var(--light-border); }
+  .qty-val { width: 40px; height: 30px; border: none; border-left: 1.5px solid var(--light-border); border-right: 1.5px solid var(--light-border); text-align: center; font-size: 13px; font-weight: 700; font-family: 'Malgun Gothic', sans-serif; outline: none; }
+
+  .item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .item-total { font-size: 16px; font-weight: 700; color: var(--accent); }
+  .btn-remove {
+    background: none; border: none; cursor: pointer;
+    font-size: 16px; color: var(--muted);
+    transition: color 0.2s;
+    line-height: 1;
+  }
+  .btn-remove:hover { color: var(--accent); }
+
+ 
+
+  /* 빈 장바구니 */
+  .cart-empty {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border: 1.5px solid var(--ink);
+    border-top: none;
+    display: none;
+  }
+  .cart-empty.show { display: block; }
+  .cart-empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .cart-empty p { font-size: 15px; color: var(--muted); margin-bottom: 20px; }
+  .btn-go-shop { display: inline-block; padding: 12px 32px; background: var(--ink); color: white; text-decoration: none; font-size: 13px; font-weight: 700; transition: background 0.2s; }
+  .btn-go-shop:hover { background: var(--accent); }
+
+  
+
+  /* ─── 결제 요약 ─── */
+  .order-summary {
+    background: var(--warm-white);
+    border: 1.5px solid var(--ink);
+    padding: 24px;
+    position: sticky;
+    top: 80px;
+  }
+  .summary-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: var(--muted);
+  }
+  .summary-row .val { color: var(--ink); font-weight: 500; }
+  .summary-row.free .val { color: #4CAF50; font-weight: 700; }
+  .summary-divider { border: none; border-top: 1px solid var(--light-border); margin: 16px 0; }
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .total-label { font-size: 14px; font-weight: 700; }
+  .total-price { font-size: 24px; font-weight: 700; color: var(--accent); }
+  .total-point { font-size: 11px; color: var(--muted); text-align: right; margin-bottom: 20px; }
+  .total-point strong { color: var(--accent); }
+
+  .btn-checkout {
+    width: 100%;
+    padding: 15px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Malgun Gothic', sans-serif;
+    transition: background 0.2s;
+    margin-bottom: 8px;
+    letter-spacing: 0.03em;
+  }
+  .btn-checkout:hover { background: var(--accent); }
+  .btn-continue {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Malgun Gothic', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+  }
+  .btn-continue:hover { background: var(--hover-bg); }
+
+  /* ─── 결제창 (모달) ─── */
+  .checkout-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .checkout-overlay.open { display: flex; }
+  .checkout-modal {
+    background: white;
+    width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform:translateY(0); } }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .modal-header h2 { font-size: 18px; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+  .modal-close:hover { color: var(--ink); }
+  .modal-body { padding: 24px; }
+
+  .modal-section { margin-bottom: 24px; }
+  .modal-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--light-border);
+  }
+  .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-group { margin-bottom: 12px; }
+  .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 5px; }
+  .form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--light-border); font-size: 13px; font-family: 'Malgun Gothic', sans-serif; outline: none; transition: border 0.2s; }
+  .form-input:focus { border-color: var(--ink); }
+
+  .pay-methods { display: flex; flex-direction: column; gap: 8px; }
+  .pay-method {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--light-border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pay-method:hover { border-color: var(--ink); }
+  .pay-method input { accent-color: var(--ink); }
+  .pay-method.selected { border-color: var(--ink); background: var(--hover-bg); }
+  .pay-icon { font-size: 20px; }
+  .pay-name { font-size: 13px; font-weight: 600; }
+  .pay-desc { font-size: 11px; color: var(--muted); }
+
+  .modal-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px;
+    background: var(--cream);
+    border: 1.5px solid var(--ink);
+    margin-bottom: 16px;
+  }
+  .modal-total-label { font-size: 14px; font-weight: 700; }
+  .modal-total-price { font-size: 22px; font-weight: 700; color: var(--accent); }
+
+  .btn-pay {
+    width: 100%;
+    padding: 15px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Malgun Gothic', sans-serif;
+    transition: background 0.2s;
+  }
+  .btn-pay:hover { background: var(--accent); }
+
+  /* 완료 화면 */
+  .complete-screen {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+  }
+  .complete-screen.show { display: block; }
+  .complete-icon { font-size: 56px; margin-bottom: 16px; }
+  .complete-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .complete-sub { font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 24px; }
+  .order-num { font-size: 13px; background: var(--cream); padding: 10px 20px; display: inline-block; margin-bottom: 24px; border: 1px solid var(--light-border); }
+  .complete-btns { display: flex; gap: 8px; justify-content: center; }
+  .btn-complete { padding: 11px 24px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Malgun Gothic', sans-serif; text-decoration: none; transition: all 0.2s; }
+  .btn-complete.primary { background: var(--ink); color: white; border: none; }
+  .btn-complete.primary:hover { background: var(--accent); }
+  .btn-complete.outline { background: white; color: var(--ink); border: 1.5px solid var(--ink); }
+  .btn-complete.outline:hover { background: var(--hover-bg); }
+
+  /* 토스트 */
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: white; padding: 12px 24px; font-size: 13px; font-weight: 600; z-index: 9999; transition: transform 0.3s; pointer-events: none; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* FOOTER */
+  footer { background: #111; color: rgba(255,255,255,0.3); font-size: 11px; text-align: center; padding: 20px; margin-top: 60px; }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; margin: 0 8px; }
+
+  footer {
+      background: #111;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 24px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 24px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-desc { font-size: 11px; line-height: 1.8; color: rgba(255,255,255,0.35); }
+    .footer-col h4 { color: rgba(255,255,255,0.8); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.4); text-decoration: none; margin-bottom: 8px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: rgba(255,255,255,0.25);
+    }
+    .footer-bottom a { color: rgba(255,255,255,0.3); text-decoration: none; margin-left: 16px; }
+    .footer-bottom a:hover { color: var(--gold); }
+  
+    /* ─── MODAL (로그인) ─── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      width: 380px;
+      padding: 40px;
+      position: relative;
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted);
+    }
+    .modal-close:hover { color: var(--ink); }
+    .modal-title { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+    .modal-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--light-border); }
+    .modal-tab {
+      flex: 1; padding: 10px; text-align: center; cursor: pointer;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .modal-tab.active { color: var(--ink); border-color: var(--ink); font-weight: 700; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--light-border);
+      font-size: 13px; font-family: 'Noto Sans KR', sans-serif;
+      outline: none; transition: border 0.2s;
+      background: white;
+    }
+    .form-input:focus { border-color: var(--ink); }
+    .form-submit {
+      width: 100%; padding: 13px;
+      background: var(--ink); color: white;
+      border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .form-submit:hover { background: var(--accent); }
+    .form-links { display: flex; justify-content: center; gap: 16px; margin-top: 16px; }
+    .form-link { font-size: 11px; color: var(--muted); text-decoration: none; }
+    .form-link:hover { color: var(--ink); text-decoration: underline; }
+    .divider-or { text-align: center; position: relative; margin: 20px 0; }
+    .divider-or::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--light-border); }
+    .divider-or span { background: white; padding: 0 12px; font-size: 11px; color: var(--muted); position: relative; }
+    .social-btn {
+      width: 100%; padding: 10px;
+      border: 1.5px solid var(--light-border);
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+      margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--ink); background: var(--hover-bg); }
+    .kakao { background: #FEE500; border-color: #FEE500; }
+    .kakao:hover { background: #FAD800; }
+
+  .addr-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .addr-row { display: flex; gap: 6px; }
+  .addr-row input { flex: 1; }
+  .btn-addr {
+    padding: 10px 14px; background: var(--ink); color: white;
+    border: none; cursor: pointer; font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif; white-space: nowrap;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .btn-addr:hover { background: var(--accent); }
+
+  /* ─── 네이버페이 모의 모달 ─── */
+  .npay-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .npay-modal {
+    background: #fff; width: 360px; border-radius: 12px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: npayIn .25s ease;
+  }
+  @keyframes npayIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  .npay-header {
+    background: #03C75A; padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .npay-logo { display: flex; align-items: center; gap: 8px; }
+  .npay-logo-n {
+    width: 28px; height: 28px; background: #fff; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; color: #03C75A; letter-spacing: -1px;
+  }
+  .npay-logo-text { color: #fff; font-size: 17px; font-weight: 700; letter-spacing: 0.5px; }
+  .npay-close {
+    background: none; border: none; color: rgba(255,255,255,0.8);
+    font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;
+  }
+  .npay-close:hover { color: #fff; }
+  .npay-merchant {
+    padding: 20px 24px 4px; text-align: center;
+    font-size: 13px; color: #888;
+  }
+  .npay-amount-row {
+    padding: 2px 24px 16px; text-align: center;
+    font-size: 26px; font-weight: 700; color: #111;
+  }
+  .npay-divider-line { border: none; border-top: 1px solid #eee; margin: 0; }
+  .npay-qr-section { padding: 20px 24px 16px; text-align: center; }
+  .npay-qr-label { font-size: 12px; color: #555; margin-bottom: 14px; line-height: 1.6; }
+  #npay-qr { display: inline-block; padding: 10px; border: 1px solid #e5e5e5; border-radius: 8px; }
+  #npay-qr img, #npay-qr canvas { display: block; }
+  .npay-timer-row {
+    margin-top: 12px; font-size: 12px; color: #888;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .npay-timer-badge {
+    background: #f5f5f5; border-radius: 20px; padding: 3px 10px;
+    font-size: 13px; font-weight: 700; color: #333; font-variant-numeric: tabular-nums;
+  }
+  .npay-timer-badge.urgent { color: #e53935; }
+  .npay-or { display: flex; align-items: center; gap: 10px; margin: 0 24px 16px; }
+  .npay-or::before, .npay-or::after { content:''; flex:1; height:1px; background:#e5e5e5; }
+  .npay-or span { font-size: 11px; color: #aaa; white-space: nowrap; }
+  .npay-pc-btn {
+    display: block; width: calc(100% - 48px); margin: 0 24px 24px;
+    background: #03C75A; color: #fff; border: none; border-radius: 8px;
+    padding: 14px; font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: 'Malgun Gothic', sans-serif;
+    transition: background .15s;
+  }
+  .npay-pc-btn:hover { background: #02b351; }
+  .npay-pc-btn:disabled { background: #aaa; cursor: not-allowed; }
+  .npay-qr-expired { padding: 60px 20px; font-size: 13px; color: #aaa; }
+  .npay-security {
+    padding: 0 24px 20px; display: flex; align-items: center;
+    justify-content: center; gap: 6px; font-size: 11px; color: #aaa;
+  }
+</style>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <a href="/" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="KYUBOBOOK 로고" style="height:65px; width:65px; vertical-align:middle; margin-right:10px; object-fit:contain; border-radius:50%;">KYUBO<span>BOOK</span></a>
+      <form class="search-wrap" action="/search" method="GET">
+        <select name="type"><option value="전체">전체</option><option value="도서명">도서명</option><option value="저자명">저자명</option><option value="출판사">출판사</option></select>
+        <input type="text" name="q" placeholder="도서명, 저자, 출판사를 입력하세요">
+        <button type="submit">🔍</button>
+      </form>
+      <div class="header-actions">
+        <a href="/cart" class="icon-btn" style="background:var(--ink);color:white;border-color:var(--ink);">🛒
+          {% if cart_items %}<span class="badge">{{ cart_items|length }}</span>{% endif %}
+        </a>
+        {% if session.member_id %}
+        <a href="/mypage" class="btn-action">{{ session.member_name }}</a>
+        <a href="/logout" class="btn-action" style="color:var(--accent);border-color:var(--accent);">로그아웃</a>
+        {% else %}
+        <a href="/login" class="btn-action primary">로그인 / 회원가입</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-item">🏠홈</a>
+      <a href="/books/local" class="nav-item">🇰🇷국내도서</a>
+      <a href="/books/foreign" class="nav-item">🌍외국도서</a>
+      <a href="/bestseller" class="nav-item">🏆베스트셀러</a>
+      <a href="/new-releases" class="nav-item">✨신간</a>
+      <a href="/category" class="nav-item">📚카테고리</a>
+      <a href="/inventory" class="nav-item">📦재고확인</a>
+    </div>
+  </nav>
+</header>
+
+<!-- 단계 표시 -->
+<div class="steps-wrap">
+  <div class="steps">
+    <div class="step active">
+      <div class="step-num">1</div>
+      <span>장바구니</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <span>주문/결제</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <span>주문완료</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page-wrap">
+  <div class="page-title">
+    장바구니
+    <span class="cart-count" id="cart-count">총 {{ cart_items|length if cart_items else 0 }}권</span>
+  </div>
+
+  <div class="cart-layout">
+
+    <!-- 왼쪽: 장바구니 목록 -->
+    <div>
+      <!-- 전체선택 헤더 -->
+      <div class="cart-header">
+        <label>
+          <input type="checkbox" id="check-all" onchange="toggleAll(this)" checked>
+          <span class="select-all-label">전체선택 ({{ cart_items|length if cart_items else 0 }}/{{ cart_items|length if cart_items else 0 }})</span>
+        </label>
+        <button class="btn-delete-selected" onclick="deleteSelected()">선택 삭제</button>
+      </div>
+
+      <!-- 장바구니 아이템 목록 -->
+      <div class="cart-list" id="cart-list">
+        {% set colors = ['linear-gradient(135deg,#2D4A3E,#1A2E26)','linear-gradient(135deg,#3D2E1A,#5C3D2E)','linear-gradient(135deg,#1A2D4A,#2E3D5C)','linear-gradient(135deg,#4A1A2D,#5C2E3D)','linear-gradient(135deg,#2D3D1A,#3D5C2E)'] %}
+        {% for item in cart_items %}
+        <div class="cart-item" data-cart-id="{{ item.CartID }}" data-id="{{ item.BookID }}" data-price="{{ item.Price }}">
+          <input type="checkbox" class="item-check" checked onchange="updateSummary()">
+          <a href="/book/{{ item.BookID }}">
+            {% if item.ImageURL %}
+              <div class="item-cover" style="background:#fff;padding:0;">
+                <img src="{{ item.ImageURL }}" alt="{{ item.Title }}"
+                     onerror="this.parentElement.innerHTML='{{ item.Title|truncate(10, true, '') }}'; this.parentElement.style.background='{{ colors[loop.index0 % 5] }}'; this.parentElement.style.color='rgba(255,255,255,0.85)'; this.parentElement.style.padding='8px';">
+              </div>
+            {% else %}
+              <div class="item-cover" style="background:{{ colors[loop.index0 % 5] }};color:rgba(255,255,255,0.85);">{{ item.Title | truncate(10, true, '') }}</div>
+            {% endif %}
+          </a>
+          <div class="item-info">
+            <div class="item-category">{{ item.Genre or '도서' }}</div>
+            <a href="/book/{{ item.BookID }}" style="text-decoration:none;color:inherit;">
+              <div class="item-title">{{ item.Title }}</div>
+            </a>
+            <div class="item-author">{{ item.AuthorName }} · {{ item.PublisherName }}</div>
+            <div class="item-price-row">
+              <span class="item-price">{{ "{:,}".format(item.Price) }}원</span>
+            </div>
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="changeQty(this, -1)">−</button>
+              <input type="number" class="qty-val" value="{{ item.Quantity }}" min="1" max="99" onchange="updateSummary()">
+              <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-remove" onclick="removeItem(this)" title="삭제">✕</button>
+            <div class="item-total">{{ "{:,}".format(item.Price * item.Quantity) }}원</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if not session.member_id %}
+      <div class="cart-empty show" id="cart-empty">
+        <div class="cart-empty-icon">🔒</div>
+        <p>로그인 후 장바구니를 이용할 수 있어요</p>
+        <a href="/login" class="btn-go-shop">로그인하기</a>
+      </div>
+      {% else %}
+      <div class="cart-empty {% if not cart_items %}show{% endif %}" id="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <p>장바구니가 비어있어요</p>
+        <a href="/" class="btn-go-shop">도서 둘러보기</a>
+      </div>
+      {% endif %}
+
+
+    </div>
+
+    <!-- 오른쪽: 결제 요약 -->
+    <div class="order-summary">
+      <div class="summary-title">주문 요약</div>
+
+      <div class="summary-row">
+        <span>상품 금액</span>
+        <span class="val" id="sum-items">0원</span>
+      </div>
+      <div class="summary-row">
+        <span>할인 금액</span>
+        <span class="val" style="color:var(--accent);" id="sum-disc">0원</span>
+      </div>
+      <div class="summary-row free">
+        <span>배송비</span>
+        <span class="val">무료</span>
+      </div>
+<hr class="summary-divider">
+
+      <div class="summary-total">
+        <span class="total-label">결제 금액</span>
+        <span class="total-price" id="sum-total">0원</span>
+      </div>
+
+
+      <button class="btn-checkout" onclick="openCheckout()">주문/결제하기</button>
+      <a href="/" class="btn-continue">계속 쇼핑하기</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">KYUBO<span>BOOK</span></div>
+        <div class="footer-desc">온라인 주문 및 재고관리<br>시스템 기반 KYUBOBOOK 스마트 서점</div>
+      </div>
+      <div class="footer-col">
+        <h4>고객 서비스</h4>
+        <a href="/notice">공지사항</a>
+        <a href="/faq">자주 묻는 질문</a>
+        <a href="/shipping">배송 안내</a>
+      </div>
+      <div class="footer-col">
+        <h4>회원 서비스</h4>
+        <a href="/mypage">마이페이지</a>
+      </div>
+      <div class="footer-col">
+        <h4>회사 정보</h4>
+        <a href="/about">회사 소개</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 KYUBOBOOK. All rights reserved. | PC 버전</span>
+      <div>
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+        <a href="#">사업자정보</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- 결제 모달 -->
+<div class="checkout-overlay" id="checkout-overlay" onclick="if(event.target===this)closeCheckout()">
+  <div class="checkout-modal">
+
+    <!-- 주문 완료 화면 -->
+    <div class="complete-screen" id="complete-screen">
+      <div class="complete-icon">🎉</div>
+      <div class="complete-title">주문이 완료됐어요!</div>
+      <div class="complete-sub">주문해주셔서 감사합니다.<br>빠르게 출고 준비를 시작할게요.</div>
+      <div class="order-num">주문번호: BN-2025-<span id="order-num-val"></span></div>
+      <div class="complete-btns">
+        <a href="/mypage" class="btn-complete primary">주문 내역 보기</a>
+        <a href="/" class="btn-complete outline">홈으로</a>
+      </div>
+    </div>
+
+    <!-- 결제 폼 -->
+    <div id="checkout-form">
+      <div class="modal-header">
+        <h2>주문 / 결제</h2>
+        <button class="modal-close" onclick="closeCheckout()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- 배송지 -->
+        <div class="modal-section">
+          <div class="modal-section-title">배송지 정보</div>
+          <div class="form-row2">
+            <div class="form-group">
+              <label class="form-label">받는 분</label>
+              <input type="text" id="checkout-name" class="form-input" placeholder="이름">
+            </div>
+            <div class="form-group">
+              <label class="form-label">연락처</label>
+              <input type="tel" id="checkout-phone" class="form-input" placeholder="010-0000-0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">주소</label>
+            <div class="addr-wrap">
+              <div class="addr-row">
+                <input type="text" id="cart-zipcode" class="form-input" placeholder="우편번호" readonly style="max-width:120px;">
+                <button type="button" class="btn-addr" onclick="searchAddr('cart')">주소 검색</button>
+              </div>
+              <input type="text" id="checkout-address" class="form-input" placeholder="도로명 주소" readonly>
+              <input type="text" id="cart-addr-detail" class="form-input" placeholder="상세 주소 입력">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">배송 메모</label>
+            <select class="form-input">
+              <option>배송 메모를 선택해주세요</option>
+              <option>문 앞에 놓아주세요</option>
+              <option>경비실에 맡겨주세요</option>
+              <option>직접 받겠습니다</option>
+              <option>직접 입력</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결제 수단 -->
+        <div class="modal-section">
+          <div class="modal-section-title">결제 수단</div>
+          <div class="pay-methods">
+            <label class="pay-method selected" onclick="selectPay(this)">
+              <input type="radio" name="pay" value="card" checked>
+              <span class="pay-icon">💳</span>
+              <div>
+                <div class="pay-name">신용/체크카드</div>
+                <div class="pay-desc">주요 카드사 무이자 할부 가능</div>
+              </div>
+            </label>
+            <label class="pay-method" onclick="selectPay(this)">
+              <input type="radio" name="pay" value="kakao">
+              <span class="pay-icon">💛</span>
+              <div>
+                <div class="pay-name">카카오페이</div>
+                <div class="pay-desc">카카오페이로 간편결제</div>
+              </div>
+            </label>
+            <label class="pay-method" onclick="selectPay(this)">
+              <input type="radio" name="pay" value="naver">
+              <span class="pay-icon">🟢</span>
+              <div>
+                <div class="pay-name">네이버페이</div>
+                <div class="pay-desc">네이버페이로 간편결제</div>
+              </div>
+            </label>
+            <label class="pay-method" onclick="selectPay(this)">
+              <input type="radio" name="pay" value="transfer">
+              <span class="pay-icon">🏦</span>
+              <div>
+                <div class="pay-name">무통장입금</div>
+                <div class="pay-desc">입금 확인 후 출고 처리</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+
+
+        <div class="modal-section">
+          <div class="modal-section-title">포인트 사용</div>
+
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
+            <span>보유 포인트</span>
+            <strong id="checkout-owned-point">0P</strong>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <input type="number"
+                   id="checkout-use-point"
+                   value="0"
+                   min="0"
+                   step="100"
+                   placeholder="사용할 포인트"
+                   oninput="updateCheckoutPointDiscount()"
+                   onblur="normalizeCheckoutPointInput()"
+                   class="form-input"
+                   style="flex:1;">
+
+            <button type="button"
+                    onclick="useAllCheckoutPoint()"
+                    style="width:90px; border:none; background:var(--ink); color:white; font-size:12px; cursor:pointer;">
+              전액사용
+            </button>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--muted);">
+            <span>포인트 할인</span>
+            <strong id="checkout-point-discount" style="color:var(--accent);">-0원</strong>
+          </div>
+        </div>
+
+        <!-- 최종 금액 -->
+        <div class="modal-total">
+          <span class="modal-total-label">최종 결제 금액</span>
+          <span class="modal-total-price" id="modal-total">0원</span>
+        </div>
+
+        <button class="btn-pay" onclick="doPay()">주문하기</button>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ─── 장바구니 결제창 포인트 할인용 변수 ───
+let cartOwnedPoint = 0;
+let cartOriginalTotalPrice = 0;
+let cartUsedPoint = 0;
+let cartFinalTotalPrice = 0;
+
+// ─── 포인트 할인 업데이트 ───
+function updateCheckoutPointDiscount() {
+  const input = document.getElementById('checkout-use-point');
+  if (!input) return;
+
+  let usePoint = parseInt(input.value) || 0;
+  if (usePoint < 0) usePoint = 0;
+
+  // 보유 포인트 초과 방지 (즉시 클램핑)
+  if (usePoint > cartOwnedPoint) {
+    usePoint = cartOwnedPoint;
+    input.value = usePoint;
+  }
+  // 상품금액 초과 방지
+  if (usePoint > cartOriginalTotalPrice) {
+    usePoint = cartOriginalTotalPrice;
+    input.value = usePoint;
+  }
+
+  // 화면 표시는 100P 단위로 내림한 값으로 (입력 중에는 input 값 자체를 건드리지 않음)
+  const appliedPoint = Math.floor(usePoint / 100) * 100;
+  cartUsedPoint = appliedPoint;
+  cartFinalTotalPrice = Math.max(cartOriginalTotalPrice - appliedPoint, 0);
+
+  const discEl = document.getElementById('checkout-point-discount');
+  if (discEl) discEl.textContent = '-' + appliedPoint.toLocaleString() + '원';
+
+  const totalEl = document.getElementById('modal-total');
+  if (totalEl) totalEl.textContent = cartFinalTotalPrice.toLocaleString() + '원';
+}
+
+// ─── 포커스 빠질 때: 100P 단위로 입력값 정렬 ───
+function normalizeCheckoutPointInput() {
+  const input = document.getElementById('checkout-use-point');
+  if (!input) return;
+  let v = parseInt(input.value) || 0;
+  if (v < 0) v = 0;
+  if (v > cartOwnedPoint) v = cartOwnedPoint;
+  if (v > cartOriginalTotalPrice) v = cartOriginalTotalPrice;
+  v = Math.floor(v / 100) * 100;  // 100P 단위로 내림
+  input.value = v;
+  updateCheckoutPointDiscount();
+}
+
+// ─── 전액 사용 ───
+function useAllCheckoutPoint() {
+  const input = document.getElementById('checkout-use-point');
+  if (!input) return;
+  let max = Math.min(cartOwnedPoint, cartOriginalTotalPrice);
+  max = Math.floor(max / 100) * 100;
+  input.value = max;
+  updateCheckoutPointDiscount();
+}
+
+// ─── 수량 변경 ───
+function changeQty(btn, delta) {
+  const wrap   = btn.closest('.qty-wrap');
+  const input  = wrap.querySelector('.qty-val');
+  const item   = btn.closest('.cart-item');
+  const cartId = item.dataset.cartId;
+  let v = parseInt(input.value) + delta;
+  if (v < 1) v = 1;
+  if (v > 99) v = 99;
+  input.value = v;
+  updateItemTotal(item);
+  updateSummary();
+  fetch('/cart/update/' + cartId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quantity: v })
+  });
+}
+
+function updateItemTotal(item) {
+  const price = parseInt(item.dataset.price);
+  const qty   = parseInt(item.querySelector('.qty-val').value);
+  item.querySelector('.item-total').textContent = (price * qty).toLocaleString() + '원';
+}
+
+// ─── 전체선택 ───
+function toggleAll(el) {
+  document.querySelectorAll('.item-check').forEach(c => {
+    c.checked = el.checked;
+  });
+  updateSummary();
+}
+
+// ─── 아이템 삭제 ───
+function removeItem(btn) {
+  const item   = btn.closest('.cart-item');
+  const cartId = item.dataset.cartId;
+  fetch('/cart/remove/' + cartId, { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success) {
+        item.style.transition = 'opacity 0.3s';
+        item.style.opacity = '0';
+        setTimeout(() => { item.remove(); updateSummary(); checkEmpty(); }, 300);
+      } else showToast('❌ 삭제 실패');
+    });
+}
+
+
+
+// ─── 선택 삭제 ───
+function deleteSelected() {
+  const checked = document.querySelectorAll('.item-check:checked');
+
+  if (checked.length === 0) {
+    showToast('삭제할 상품을 선택해주세요.');
+    return;
+  }
+
+  const cartIds = [];
+
+  checked.forEach(c => {
+    const item = c.closest('.cart-item');
+    cartIds.push(item.dataset.cartId);
+  });
+
+  fetch('/cart/remove-selected', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      cart_ids: cartIds
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.success) {
+      checked.forEach(c => {
+        c.closest('.cart-item').remove();
+      });
+
+      updateSummary();
+      checkEmpty();
+      showToast('선택 상품이 삭제되었습니다.');
+    } else {
+      showToast('삭제 실패');
+    }
+  });
+}
+
+// ─── 빈 장바구니 확인 ───
+function checkEmpty() {
+  const items = document.querySelectorAll('#cart-list .cart-item');
+  document.getElementById('cart-empty').classList.toggle('show', items.length === 0);
+}
+
+// ─── 금액 업데이트 ───
+function updateSummary() {
+  let total = 0;
+  document.querySelectorAll('#cart-list .cart-item').forEach(item => {
+    const check = item.querySelector('.item-check');
+    if (check && check.checked) {
+      const price = parseInt(item.dataset.price);
+      const qty   = parseInt(item.querySelector('.qty-val').value);
+      total += price * qty;
+    }
+  });
+  const checked = document.querySelectorAll('.item-check:checked').length;
+  const all     = document.querySelectorAll('.item-check').length;
+  document.getElementById('check-all').checked = checked === all && all > 0;
+  document.querySelector('.select-all-label').textContent = `전체선택 (${checked}/${all})`;
+  document.getElementById('cart-count').textContent = `총 ${all}권`;
+  document.getElementById('sum-total').textContent  = total.toLocaleString() + '원';
+  document.getElementById('sum-items').textContent  = total.toLocaleString() + '원';
+  const sumPoint = document.getElementById('sum-point');
+  if (sumPoint) sumPoint.textContent = Math.floor(total * 0.01).toLocaleString() + ' 포인트';
+  document.getElementById('modal-total').textContent = total.toLocaleString() + '원';
+}
+
+// ─── 결제 모달 ───
+function openCheckout() {
+  const checked = document.querySelectorAll('.item-check:checked').length;
+  if (checked === 0) { showToast('주문할 상품을 선택해주세요.'); return; }
+  document.getElementById('checkout-overlay').classList.add('open');
+  document.querySelector('.steps .step:nth-child(3)').classList.add('active');
+
+  const totalText = document.getElementById('sum-total').textContent.replace(/[^\d]/g, '');
+  cartOriginalTotalPrice = parseInt(totalText || '0');
+  cartFinalTotalPrice = cartOriginalTotalPrice;
+  cartUsedPoint = 0;
+
+  const pointInput = document.getElementById('checkout-use-point');
+  if (pointInput) {
+    pointInput.value = 0;
+    pointInput.max = cartOriginalTotalPrice;
+  }
+
+  const discountEl = document.getElementById('checkout-point-discount');
+  if (discountEl) discountEl.textContent = '-0원';
+
+  const ownedPointEl = document.getElementById('checkout-owned-point');
+  if (ownedPointEl) ownedPointEl.textContent = '0P';
+
+  document.getElementById('modal-total').textContent = cartOriginalTotalPrice.toLocaleString() + '원';
+
+  // 내 정보 자동 입력
+  fetch('/api/my-info')
+    .then(r => r.json())
+    .then(d => {
+      if (d.success) {
+        document.getElementById('checkout-name').value    = d.name    || '';
+        document.getElementById('checkout-phone').value   = d.phone   || '';
+        document.getElementById('checkout-address').value = d.address || '';
+
+        cartOwnedPoint = parseInt(d.point || 0);
+
+        const ownedPointEl = document.getElementById('checkout-owned-point');
+        if (ownedPointEl) ownedPointEl.textContent = cartOwnedPoint.toLocaleString() + 'P';
+
+        const pointInput = document.getElementById('checkout-use-point');
+        if (pointInput) pointInput.max = Math.min(cartOwnedPoint, cartOriginalTotalPrice);
+
+        updateCheckoutPointDiscount();
+      }
+    })
+    .catch(() => {});
+}
+function closeCheckout() {
+  document.getElementById('checkout-overlay').classList.remove('open');
+}
+
+// ─── 주문 완료 화면 표시 ───
+function showComplete(orderId, isTransfer) {
+  document.getElementById('checkout-form').style.display = 'none';
+  const cs = document.getElementById('complete-screen');
+  cs.classList.add('show');
+  if (isTransfer) {
+    cs.querySelector('.complete-title').textContent = '주문이 접수됐어요!';
+    cs.querySelector('.complete-sub').innerHTML =
+      '입금 확인 후 출고 처리됩니다.<br><strong style="color:var(--accent)">국민은행 000-0000-0000-00 KYUBOBOOK</strong><br>입금 기한: 주문 후 24시간 이내';
+  } else {
+    cs.querySelector('.complete-title').textContent = '주문이 완료됐어요!';
+    cs.querySelector('.complete-sub').textContent = '주문해주셔서 감사합니다. 빠르게 출고 준비를 시작할게요.';
+  }
+  document.getElementById('order-num-val').textContent = orderId;
+  document.querySelectorAll('.step').forEach((s, i) => {
+    if (i === 0) s.classList.add('done');
+    if (i === 2) s.classList.add('active');
+  });
+}
+
+// ─── 결제하기 ───
+let _isPaying = false;
+
+function setPaying(isPaying) {
+  _isPaying = isPaying;
+  const btn = document.querySelector('.btn-pay');
+  if (!btn) return;
+  btn.disabled = isPaying;
+  btn.textContent = isPaying ? '결제 처리 중...' : '주문하기';
+}
+
+function cleanupPaidCartItems() {
+  document.querySelectorAll('#cart-list .item-check:checked').forEach(c => {
+    const item = c.closest('.cart-item');
+    if (item) item.remove();
+  });
+  updateSummary();
+  checkEmpty();
+}
+
+function handleOrderSuccess(orderId, isTransfer) {
+  cleanupPaidCartItems();
+  showComplete(orderId, isTransfer);
+}
+
+function collectOrderItems() {
+  const items = [];
+  let firstName = '';
+  document.querySelectorAll('#cart-list .cart-item').forEach(item => {
+    const check = item.querySelector('.item-check');
+    if (check && check.checked) {
+      const title = item.querySelector('.item-title')?.textContent?.trim() || '도서';
+      if (!firstName) firstName = title;
+      items.push({
+        cart_id:  item.dataset.cartId,
+        book_id:  item.dataset.id,
+        quantity: parseInt(item.querySelector('.qty-val').value),
+        price:    parseInt(item.dataset.price)
+      });
+    }
+  });
+  return { items, firstName };
+}
+
+function doPay() {
+  if (_isPaying) {
+    showToast('이미 결제 처리 중입니다. 잠시만 기다려주세요.');
+    return;
+  }
+
+  const collected = collectOrderItems();
+  const items = collected.items;
+  const firstName = collected.firstName;
+
+  if (items.length === 0) { showToast('주문할 상품을 선택해주세요.'); return; }
+
+  const address     = ((document.getElementById('checkout-address')?.value || '') + ' ' + (document.getElementById('cart-addr-detail')?.value || '')).trim();
+  const payRadio    = document.querySelector('input[name="pay"]:checked');
+  const payValue    = payRadio ? payRadio.value : 'card';
+  const originalAmount = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  cartOriginalTotalPrice = originalAmount;
+  normalizeCheckoutPointInput();
+  const totalAmount = Math.max(originalAmount - cartUsedPoint, 100);
+  const orderName   = items.length > 1 ? `${firstName} 외 ${items.length - 1}건` : firstName;
+
+  // 무통장입금 → 바로 주문 생성
+  if (payValue === 'transfer') {
+    setPaying(true);
+    fetch('/cart/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items, address, amount: totalAmount, used_point: cartUsedPoint })
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success) handleOrderSuccess(d.order_id, true);
+      else {
+        setPaying(false);
+        showToast('❌ 주문 실패: ' + (d.error || ''));
+      }
+    })
+    .catch(() => {
+      setPaying(false);
+      showToast('❌ 서버 오류');
+    });
+    return;
+  }
+
+  // 네이버페이 → 모의 팝업
+  if (payValue === 'naver') {
+    openNaverPayModal(items, address, totalAmount, orderName);
+    return;
+  }
+
+  // 카드/카카오 → 서버가 merchant_uid를 먼저 발급한 뒤 포트원 결제창 실행
+  const PG_MAP  = { card: 'html5_inicis.INIpayTest', kakao: 'kakaopay.TC0ONETIME' };
+  const PAY_MAP = { card: 'card',                    kakao: 'kakaopay' };
+
+  setPaying(true);
+
+  fetch('/payment/prepare', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      items: items,
+      address: address,
+      amount: totalAmount,
+      used_point: cartUsedPoint,
+      order_name: orderName
+    })
+  })
+  .then(r => r.json())
+  .then(prep => {
+    if (!prep.success) {
+      setPaying(false);
+      showToast('❌ 결제 준비 실패: ' + (prep.error || ''));
+      return;
+    }
+
+    IMP.request_pay({
+      pg:           PG_MAP[payValue]  || 'html5_inicis',
+      pay_method:   PAY_MAP[payValue] || 'card',
+      merchant_uid: prep.merchant_uid,
+      name:         prep.order_name || orderName,
+      amount:       prep.amount
+    }, function(rsp) {
+      if (!rsp.success) {
+        setPaying(false);
+        showToast('❌ 결제 실패: ' + (rsp.error_msg || ''));
+        return;
+      }
+
+      fetch('/payment/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imp_uid:      rsp.imp_uid,
+          merchant_uid: rsp.merchant_uid,
+          used_point:   cartUsedPoint
+        })
+      })
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) handleOrderSuccess(d.order_id, false);
+        else {
+          setPaying(false);
+          showToast('❌ 주문 실패: ' + (d.error || ''));
+        }
+      })
+      .catch(() => {
+        setPaying(false);
+        showToast('❌ 서버 오류');
+      });
+    });
+  })
+  .catch(() => {
+    setPaying(false);
+    showToast('❌ 결제 준비 중 서버 오류');
+  });
+}
+
+// ─── 네이버페이 모의 팝업 ───
+let _npayItems = null, _npayAddress = '', _npayTimer = null;
+
+function openNaverPayModal(items, address, amount, orderName) {
+  _npayItems   = items;
+  _npayAddress = address;
+
+  document.getElementById('npay-amount').textContent = amount.toLocaleString() + '원';
+
+  // QR 코드 생성
+  const qrEl = document.getElementById('npay-qr');
+  qrEl.innerHTML = '';
+  new QRCode(qrEl, {
+    text: 'https://pay.naver.com/payments/new?mid=KYUBOBOOK&amt=' + amount + '&oid=order_' + Date.now(),
+    width: 180, height: 180,
+    colorDark: '#000000', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // 타이머 초기화
+  clearInterval(_npayTimer);
+  let seconds = 180;
+  const badge = document.getElementById('npay-timer');
+  badge.className = 'npay-timer-badge';
+  badge.textContent = '3:00';
+
+  _npayTimer = setInterval(() => {
+    seconds--;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    badge.textContent = m + ':' + String(s).padStart(2, '0');
+    if (seconds <= 30) badge.classList.add('urgent');
+    if (seconds <= 0) {
+      clearInterval(_npayTimer);
+      badge.textContent = '만료';
+      qrEl.innerHTML = '<div class="npay-qr-expired">QR코드가 만료되었습니다.<br>창을 닫고 다시 시도해주세요.</div>';
+      document.getElementById('npay-confirm-btn').disabled = true;
+    }
+  }, 1000);
+
+  const btn = document.getElementById('npay-confirm-btn');
+  btn.textContent = '이 기기에서 결제하기';
+  btn.disabled = false;
+
+  document.getElementById('npay-modal').style.display = 'flex';
+}
+
+function closeNaverPay() {
+  document.getElementById('npay-modal').style.display = 'none';
+  clearInterval(_npayTimer);
+  _npayItems = null;
+}
+
+function confirmNaverPay() {
+  if (!_npayItems) return;
+  const btn = document.getElementById('npay-confirm-btn');
+  btn.textContent = '결제 처리 중...';
+  btn.disabled = true;
+  clearInterval(_npayTimer);
+
+  fetch('/cart/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: _npayItems, address: _npayAddress, amount: Math.max(cartOriginalTotalPrice - cartUsedPoint, 100), used_point: cartUsedPoint })
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('npay-modal').style.display = 'none';
+    if (d.success) handleOrderSuccess(d.order_id, false);
+    else showToast('❌ 주문 실패: ' + (d.error || ''));
+    btn.textContent = '이 기기에서 결제하기';
+    btn.disabled = false;
+  })
+  .catch(() => {
+    showToast('❌ 서버 오류');
+    btn.textContent = '이 기기에서 결제하기';
+    btn.disabled = false;
+  });
+}
+
+// ─── 결제수단 선택 ───
+function selectPay(el) {
+  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ─── 찜 목록 토글 ───
+
+
+window.addEventListener("DOMContentLoaded", function() {
+  updateSummary();
+  IMP.init('imp33832107');
+});
+
+// ─── 토스트 ───
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function searchAddr(type) {
+  new daum.Postcode({
+    oncomplete: function(data) {
+      const addr = data.roadAddress || data.jibunAddress;
+      if (type === 'cart') {
+        document.getElementById('cart-zipcode').value = data.zonecode;
+        document.getElementById('checkout-address').value = addr;
+        document.getElementById('cart-addr-detail').focus();
+      }
+    }
+  }).open();
+}
+</script>
+
+<!-- ─── 네이버페이 모의 결제 모달 ─── -->
+<div id="npay-modal" class="npay-overlay" style="display:none;" onclick="if(event.target===this)closeNaverPay()">
+  <div class="npay-modal">
+    <div class="npay-header">
+      <div class="npay-logo">
+        <div class="npay-logo-n">N</div>
+        <span class="npay-logo-text">Pay</span>
+      </div>
+      <button class="npay-close" onclick="closeNaverPay()">✕</button>
+    </div>
+    <div class="npay-merchant">KYUBOBOOK</div>
+    <div class="npay-amount-row"><span id="npay-amount">0원</span></div>
+    <div class="npay-divider-line"></div>
+    <div class="npay-qr-section">
+      <div class="npay-qr-label">네이버 앱에서 QR코드를 스캔하면<br>간편하게 결제됩니다</div>
+      <div id="npay-qr"></div>
+      <div class="npay-timer-row">
+        남은 시간&nbsp;<span class="npay-timer-badge" id="npay-timer">3:00</span>
+      </div>
+    </div>
+    <div class="npay-or"><span>또는</span></div>
+    <button class="npay-pc-btn" id="npay-confirm-btn" onclick="confirmNaverPay()">
+      이 기기에서 결제하기
+    </button>
+    <div class="npay-security">🔒 SSL 보안 결제</div>
+  </div>
+</div>
+</body>
+</html>

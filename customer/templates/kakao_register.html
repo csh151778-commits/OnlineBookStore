@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>추가 정보 입력 - KYUBOBOOK</title>
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FEFCF8;
+    --ink: #1A1410;
+    --accent: #C8472B;
+    --gold: #D4A853;
+    --muted: #8C7B6E;
+    --light-border: #E8E0D5;
+    --hover-bg: #F2EDE5;
+    --kakao: #FEE500;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--warm-white);
+    border-bottom: 2px solid var(--ink);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+
+  .main-wrap {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 480px 1fr;
+    min-height: calc(100vh - 60px);
+  }
+
+  .left-panel {
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px;
+    position: relative;
+    overflow: hidden;
+    grid-column: 1 / 3;
+  }
+  .left-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1A1410 0%, #2D1F17 50%, #3D2B1F 100%);
+  }
+  .panel-content { position: relative; z-index: 2; max-width: 400px; }
+  .panel-quote {
+    font-size: 26px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .panel-quote em { color: var(--gold); font-style: normal; font-weight: 700; }
+  .panel-author { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; }
+
+  .kakao-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--kakao);
+    color: #391B1B;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .right-panel {
+    background: var(--warm-white);
+    border-left: 2px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px 48px;
+    grid-column: 3 / 4;
+    grid-row: 1;
+    overflow-y: auto;
+  }
+
+  .form-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .form-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+  .form-sub strong { color: var(--ink); }
+
+  .form-group { margin-bottom: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .required { color: var(--accent); margin-left: 2px; }
+
+  .form-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--light-border);
+    background: white;
+    font-size: 13px;
+    font-family: 'Malgun Gothic', sans-serif;
+    color: var(--ink);
+    outline: none;
+    transition: border 0.2s;
+  }
+  .form-input:focus { border-color: var(--ink); }
+  .form-input::placeholder { color: #C5BAB0; }
+  .form-input.error { border-color: var(--accent); }
+  .form-input[readonly] { background: #F5F2ED; cursor: default; }
+
+  .error-msg {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 4px;
+    display: none;
+  }
+  .error-msg.show { display: block; }
+
+  .addr-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .addr-row { display: flex; gap: 6px; }
+  .addr-row input { flex: 1; }
+  .btn-addr {
+    padding: 10px 14px;
+    background: var(--ink);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Malgun Gothic', sans-serif;
+    white-space: nowrap;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-addr:hover { background: var(--accent); }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--kakao);
+    color: #391B1B;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Malgun Gothic', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .btn-submit:hover { background: #FAD800; }
+
+  .alert-msg {
+    display: none;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    border-left: 3px solid;
+  }
+  .alert-msg.error { background: #FFEBEE; color: #C62828; border-color: #EF5350; display: block; }
+  .alert-msg.success { background: #E8F5E9; color: #2E7D32; border-color: #4CAF50; display: block; }
+
+  footer {
+    background: #111;
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    text-align: center;
+    padding: 16px;
+  }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; margin: 0 8px; }
+</style>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="KYUBOBOOK 로고" style="height:65px;width:65px;vertical-align:middle;margin-right:10px;object-fit:contain;border-radius:50%;">KYUBO<span>BOOK</span></a>
+</header>
+
+<div class="main-wrap">
+
+  <!-- 왼쪽 배경 -->
+  <div class="left-panel">
+    <div class="panel-content">
+      <div class="kakao-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.6 5.1 4 6.6l-.8 3.2 3.7-2.4c.9.2 1.9.3 2.9.3 5.523 0 10-3.477 10-7.7S17.523 3 12 3z"/></svg>
+        카카오 계정으로 가입 중
+      </div>
+      <div class="panel-quote">
+        거의 다 왔어요!<br>
+        마지막으로 <em>몇 가지 정보</em>만<br>
+        입력해 주세요.
+      </div>
+      <div class="panel-author">— KYUBOBOOK 가입 안내</div>
+    </div>
+  </div>
+
+  <!-- 오른쪽 폼 -->
+  <div class="right-panel">
+    <div class="form-title">추가 정보 입력</div>
+    <div class="form-sub">
+      카카오 계정으로 연결된 <strong>{{ pending.name }}</strong>님,<br>
+      서비스 이용을 위해 아래 정보를 입력해 주세요.
+    </div>
+
+    <div id="alert-box" class="alert-msg"></div>
+
+    <!-- 이메일 -->
+    <div class="form-group">
+      <label class="form-label">이메일 <span class="required">*</span></label>
+      <input type="email" id="inp-email" class="form-input"
+             placeholder="example@email.com"
+             value="{{ pending.email }}">
+      <div class="error-msg" id="err-email">올바른 이메일을 입력해주세요.</div>
+    </div>
+
+    <!-- 전화번호 + 생년월일 -->
+    <div class="form-row">
+      <div>
+        <label class="form-label">전화번호 <span class="required">*</span></label>
+        <input type="tel" id="inp-phone" class="form-input"
+               placeholder="010-0000-0000"
+               oninput="formatPhone(this)">
+        <div class="error-msg" id="err-phone">전화번호를 입력해주세요.</div>
+      </div>
+      <div>
+        <label class="form-label">생년월일</label>
+        <input type="date" id="inp-birth" class="form-input">
+      </div>
+    </div>
+
+    <!-- 주소 -->
+    <div class="form-group">
+      <label class="form-label">주소 <span class="required">*</span></label>
+      <div class="addr-wrap">
+        <div class="addr-row">
+          <input type="text" id="inp-zipcode" class="form-input" placeholder="우편번호" readonly style="max-width:120px;">
+          <button type="button" class="btn-addr" onclick="searchAddr()">주소 검색</button>
+        </div>
+        <input type="text" id="inp-addr" class="form-input" placeholder="도로명 주소" readonly>
+        <input type="text" id="inp-addr-detail" class="form-input" placeholder="상세 주소 입력">
+      </div>
+      <div class="error-msg" id="err-addr">주소를 검색해주세요.</div>
+    </div>
+
+    <button class="btn-submit" onclick="doSubmit()">KYUBOBOOK 시작하기</button>
+  </div>
+
+</div>
+
+<footer>
+  <a href="#">이용약관</a>
+  <a href="#">개인정보처리방침</a>
+  © 2025 KYUBOBOOK
+</footer>
+
+<script>
+function formatPhone(input) {
+  let v = input.value.replace(/\D/g, '');
+  if (v.length <= 3) input.value = v;
+  else if (v.length <= 7) input.value = v.slice(0,3) + '-' + v.slice(3);
+  else input.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
+}
+
+function searchAddr() {
+  new daum.Postcode({
+    oncomplete: function(data) {
+      const addr = data.roadAddress || data.jibunAddress;
+      document.getElementById('inp-zipcode').value = data.zonecode;
+      document.getElementById('inp-addr').value    = addr;
+      document.getElementById('inp-addr-detail').focus();
+    }
+  }).open();
+}
+
+function showAlert(msg, type) {
+  const box = document.getElementById('alert-box');
+  box.textContent = msg;
+  box.className   = 'alert-msg ' + type;
+}
+
+function doSubmit() {
+  let ok = true;
+
+  const email  = document.getElementById('inp-email');
+  const phone  = document.getElementById('inp-phone');
+  const addr   = document.getElementById('inp-addr');
+  const detail = document.getElementById('inp-addr-detail');
+  const birth  = document.getElementById('inp-birth');
+
+  // 이메일 검사
+  if (!email.value.trim() || !email.value.includes('@')) {
+    email.classList.add('error');
+    document.getElementById('err-email').classList.add('show');
+    ok = false;
+  } else {
+    email.classList.remove('error');
+    document.getElementById('err-email').classList.remove('show');
+  }
+
+  // 전화번호 검사
+  if (!phone.value.trim()) {
+    phone.classList.add('error');
+    document.getElementById('err-phone').classList.add('show');
+    ok = false;
+  } else {
+    phone.classList.remove('error');
+    document.getElementById('err-phone').classList.remove('show');
+  }
+
+  // 주소 검사
+  if (!addr.value.trim()) {
+    addr.classList.add('error');
+    document.getElementById('err-addr').classList.add('show');
+    ok = false;
+  } else {
+    addr.classList.remove('error');
+    document.getElementById('err-addr').classList.remove('show');
+  }
+
+  if (!ok) return;
+
+  const fullAddress = (addr.value.trim() + ' ' + detail.value.trim()).trim();
+
+  fetch('/kakao/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email:   email.value.trim(),
+      phone:   phone.value.trim(),
+      address: fullAddress,
+      birth:   birth.value || null,
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.success) {
+      window.location.href = '/';
+    } else {
+      showAlert(d.message || '오류가 발생했습니다.', 'error');
+    }
+  })
+  .catch(() => showAlert('서버 오류가 발생했습니다.', 'error'));
+}
+</script>
+</body>
+</html>

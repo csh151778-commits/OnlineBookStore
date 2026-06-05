@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if page_title %}{{ page_title }}{% elif is_local %}국내도서{% else %}외국도서{% endif %} - KYUBOBOOK</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FEFCF8; --ink: #1A1410;
+    --accent: #C8472B; --gold: #D4A853; --muted: #8C7B6E;
+    --light-border: #E8E0D5; --hover-bg: #F2EDE5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--cream); color: var(--ink); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; line-height: 1.6; }
+
+  /* HEADER */
+  .top-bar { background: var(--ink); color: #ccc; font-size: 11px; padding: 6px 0; text-align: center; letter-spacing: 0.05em; }
+  .top-bar a { color: var(--gold); text-decoration: none; margin: 0 8px; }
+  header { background: var(--warm-white); border-bottom: 2px solid var(--ink); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(26,20,16,0.08); }
+  .header-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .header-top {
+    display: grid;
+    grid-template-columns: auto minmax(520px, 600px) auto;
+    align-items: center;
+    gap: 28px;
+    padding: 14px 0 10px;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: -0.5px; white-space: nowrap; flex-shrink: 0; }
+  .logo span { color: var(--accent); }
+  .search-wrap {
+    width: 100%;
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1.5px solid var(--ink);
+    background: white;
+    overflow: hidden;
+    justify-self: center;
+  }
+  .search-wrap select { border: none; border-right: 1.5px solid var(--ink); background: var(--hover-bg); padding: 0 12px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; outline: none; color: var(--ink); }
+  .search-wrap input { flex: 1; border: none; padding: 10px 14px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; outline: none; background: transparent; }
+  .search-wrap button { background: var(--ink); color: white; border: none; padding: 0 18px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+  .search-wrap button:hover { background: var(--accent); }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    justify-self: end;
+    white-space: nowrap;
+  }
+  .btn-action { padding: 7px 14px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; cursor: pointer; text-decoration: none; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+  .btn-action:hover { background: var(--ink); color: white; }
+  .btn-action.primary { background: var(--ink); color: white; }
+  .btn-action.primary:hover { background: var(--accent); border-color: var(--accent); }
+  .icon-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--light-border); background: transparent; cursor: pointer; font-size: 16px; transition: all 0.2s; position: relative; text-decoration: none; color: var(--ink); }
+  .icon-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+  nav { border-top: 1px solid var(--light-border); }
+  .nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    align-items: center;
+  }
+  .nav-item {
+    padding: 12px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    position: relative;
+    transition: color 0.2s;
+    white-space: nowrap;
+    text-align: center;
+    justify-self: center;
+  }
+  .nav-item:first-child { padding-left: 10px; }
+  .nav-item::after { content: ''; position: absolute; bottom: 0; left: 10px; right: 10px; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.2s; }
+  .nav-item:first-child::after { left: 10px; }
+  .nav-item:hover { color: var(--accent); }
+  .nav-item:hover::after, .nav-item.active::after { transform: scaleX(1); }
+  .nav-item.active { color: var(--accent); font-weight: 700; }
+
+  /* PAGE HEADER */
+  .page-header { background: var(--ink); padding: 32px 0 28px; border-bottom: 3px solid var(--gold); }
+  .page-header-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .breadcrumb { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 10px; display: flex; gap: 8px; }
+  .breadcrumb a { color: rgba(255,255,255,0.4); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .page-header h1 { font-family: 'Noto Serif KR', serif; font-size: 1.6rem; color: white; font-weight: 700; margin-bottom: 4px; }
+  .page-header p { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+  /* LAYOUT */
+  .page-layout { max-width: 1280px; margin: 0 auto; padding: 32px 24px 60px; display: flex; gap: 28px; align-items: flex-start; }
+
+  /* SIDEBAR */
+  .sidebar { width: 200px; flex-shrink: 0; }
+  .sidebar-box { background: white; border: 1px solid var(--light-border); border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+  .sidebar-title { padding: 11px 16px; font-size: 11px; font-weight: 700; color: var(--ink); letter-spacing: 0.06em; text-transform: uppercase; background: var(--hover-bg); border-bottom: 1px solid var(--light-border); }
+  .sidebar-body { padding: 8px 0; }
+  .sidebar-link { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; font-size: 13px; color: var(--ink); text-decoration: none; transition: background 0.15s; }
+  .sidebar-link:hover, .sidebar-link.active { background: var(--hover-bg); color: var(--accent); }
+  .sidebar-link .cnt { font-size: 11px; color: var(--muted); }
+
+  /* MAIN */
+  .main-area { flex: 1; min-width: 0; }
+
+  /* SORT BAR */
+  .sort-bar { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; background: white; border: 1px solid var(--light-border); border-radius: 4px; margin-bottom: 16px; }
+  .sort-bar .total { font-size: 12px; color: var(--muted); }
+  .sort-bar .total strong { color: var(--ink); }
+  .sort-options { display: flex; }
+  .sort-btn { padding: 5px 12px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; border: 1px solid var(--light-border); background: white; color: var(--muted); cursor: pointer; margin-left: -1px; transition: all 0.15s; }
+  .sort-btn:hover { background: var(--hover-bg); color: var(--ink); }
+  .sort-btn.active { background: var(--ink); border-color: var(--ink); color: white; z-index: 1; position: relative; }
+  .view-toggle { display: flex; gap: 4px; }
+  .view-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--light-border); background: white; cursor: pointer; font-size: 13px; transition: all 0.15s; }
+  .view-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* LIST VIEW */
+  .book-list { display: flex; flex-direction: column; border: 1px solid var(--light-border); border-radius: 4px; overflow: hidden; background: white; }
+  .book-list-item { display: flex; gap: 20px; padding: 18px 20px; border-bottom: 1px solid var(--light-border); transition: background 0.15s; align-items: flex-start; }
+  .book-list-item:last-child { border-bottom: none; }
+  .book-list-item:hover { background: var(--hover-bg); }
+  .book-cover { width: 80px; height: 110px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255,255,255,0.8); text-align: center; padding: 8px; line-height: 1.4; box-shadow: 2px 2px 8px rgba(0,0,0,0.2); font-family: 'Noto Serif KR', serif; font-weight: 600; position: relative; overflow: hidden; text-decoration: none; flex-shrink: 0; word-break: keep-all; }
+  .book-cover::after { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 6px; background: rgba(0,0,0,0.2); }
+  .book-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+  .book-cover img ~ span { display: none; }
+  .c1 { background: linear-gradient(135deg,#2D4A3E,#1A2E26); }
+  .c2 { background: linear-gradient(135deg,#3D2E1A,#5C3D2E); }
+  .c3 { background: linear-gradient(135deg,#1A2D4A,#2E3D5C); }
+  .c4 { background: linear-gradient(135deg,#4A1A2D,#5C2E3D); }
+  .c5 { background: linear-gradient(135deg,#2D3D1A,#3D5C2E); }
+  .book-info { flex: 1; min-width: 0; }
+  .book-genre { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .book-title-link { font-family: 'Noto Serif KR', serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); text-decoration: none; display: block; margin-bottom: 4px; transition: color 0.2s; }
+  .book-title-link:hover { color: var(--accent); }
+  .book-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .book-meta span::after { content: '·'; margin-left: 8px; }
+  .book-meta span:last-child::after { content: ''; }
+  .book-desc { font-size: 12px; color: var(--muted); line-height: 1.7; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .book-price-area { flex-shrink: 0; text-align: right; min-width: 120px; }
+  .book-price { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+  .stock-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 2px; margin-bottom: 10px; display: inline-block; }
+  .in-stock  { background: #E8F5E9; color: #2E7D32; }
+  .out-stock { background: #FFEBEE; color: #C62828; }
+  .book-actions { display: flex; flex-direction: column; gap: 6px; }
+  .btn-cart { padding: 8px 16px; background: var(--ink); color: white; border: none; cursor: pointer; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; transition: background 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .btn-cart:hover { background: var(--accent); }
+  .btn-cart.disabled { background: var(--muted); cursor: not-allowed; }
+  .btn-detail { padding: 7px 16px; background: transparent; color: var(--ink); border: 1.5px solid var(--light-border); cursor: pointer; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+  .btn-detail:hover { border-color: var(--ink); }
+
+  /* GRID VIEW */
+  .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+  .book-grid-item { background: white; border: 1px solid var(--light-border); border-radius: 4px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  .book-grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,20,16,0.12); }
+  .book-grid-cover { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: 'Noto Serif KR', serif; font-weight: 700; color: rgba(255,255,255,0.8); text-align: center; padding: 12px; line-height: 1.5; position: relative; overflow: hidden; text-decoration: none; word-break: keep-all; }
+  .book-grid-cover::after { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px; background: rgba(0,0,0,0.2); }
+  .book-grid-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .book-grid-cover img ~ span { display: none; }
+  .book-grid-body { padding: 12px; }
+  .book-grid-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 4px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.4; text-decoration: none; display: block; }
+  .book-grid-title:hover { color: var(--accent); }
+  .book-grid-author { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .book-grid-price { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .book-grid-btn { width: 100%; padding: 8px; background: var(--ink); color: white; border: none; cursor: pointer; font-size: 11px; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; transition: background 0.2s; text-decoration: none; display: block; text-align: center; }
+  .book-grid-btn:hover { background: var(--accent); }
+
+  /* EMPTY / PAGINATION */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); background: white; border: 1px solid var(--light-border); border-radius: 4px; }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+  .pagination { display: flex; justify-content: center; gap: 4px; margin-top: 24px; }
+  .page-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--light-border); background: white; font-size: 13px; cursor: pointer; transition: all 0.15s; color: var(--ink); text-decoration: none; }
+  .page-btn:hover, .page-btn.active { background: var(--ink); border-color: var(--ink); color: white; }
+  .page-btn.disabled { color: var(--muted); cursor: not-allowed; pointer-events: none; }
+
+  footer { background: var(--ink); color: rgba(255,255,255,0.35); font-size: 11px; text-align: center; padding: 20px; margin-top: 40px; }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; margin: 0 8px; }
+  @media (max-width: 980px) {
+    .header-top {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .logo,
+    .search-wrap,
+    .header-actions {
+      justify-self: stretch;
+    }
+    .header-actions {
+      justify-content: flex-end;
+    }
+    .nav-inner {
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-item {
+      flex: 0 0 auto;
+      padding: 12px 18px;
+    }
+    .nav-item:first-child { padding-left: 0; }
+    .nav-item::after { left: 18px; right: 18px; }
+    .nav-item:first-child::after { left: 0; }
+  }
+
+
+  footer {
+      background: #111;
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 24px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 24px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-desc { font-size: 11px; line-height: 1.8; color: rgba(255,255,255,0.35); }
+    .footer-col h4 { color: rgba(255,255,255,0.8); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.4); text-decoration: none; margin-bottom: 8px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: rgba(255,255,255,0.25);
+    }
+    .footer-bottom a { color: rgba(255,255,255,0.3); text-decoration: none; margin-left: 16px; }
+    .footer-bottom a:hover { color: var(--gold); }
+  
+    /* ─── MODAL (로그인) ─── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      width: 380px;
+      padding: 40px;
+      position: relative;
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted);
+    }
+    .modal-close:hover { color: var(--ink); }
+    .modal-title { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+    .modal-tabs { display: flex; gap: 0; margin-bottom: 28px; border-bottom: 2px solid var(--light-border); }
+    .modal-tab {
+      flex: 1; padding: 10px; text-align: center; cursor: pointer;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .modal-tab.active { color: var(--ink); border-color: var(--ink); font-weight: 700; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+    .form-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--light-border);
+      font-size: 13px; font-family: 'Noto Sans KR', sans-serif;
+      outline: none; transition: border 0.2s;
+      background: white;
+    }
+    .form-input:focus { border-color: var(--ink); }
+    .form-submit {
+      width: 100%; padding: 13px;
+      background: var(--ink); color: white;
+      border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .form-submit:hover { background: var(--accent); }
+    .form-links { display: flex; justify-content: center; gap: 16px; margin-top: 16px; }
+    .form-link { font-size: 11px; color: var(--muted); text-decoration: none; }
+    .form-link:hover { color: var(--ink); text-decoration: underline; }
+    .divider-or { text-align: center; position: relative; margin: 20px 0; }
+    .divider-or::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--light-border); }
+    .divider-or span { background: white; padding: 0 12px; font-size: 11px; color: var(--muted); position: relative; }
+    .social-btn {
+      width: 100%; padding: 10px;
+      border: 1.5px solid var(--light-border);
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+      margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--ink); background: var(--hover-bg); }
+    .kakao { background: #FEE500; border-color: #FEE500; }
+    .kakao:hover { background: #FAD800; }
+
+  /* ── 19금 블러 처리 ── */
+  .adult-blur { filter: blur(10px) !important; }
+  .adult-cover-wrap { position: relative; }
+  .adult-cover-wrap > a, .adult-cover-wrap > div { filter: blur(10px); }
+  .adult-badge {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(0,0,0,0.75); color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 5px 8px; border-radius: 4px;
+    text-align: center; pointer-events: none;
+    white-space: nowrap; z-index: 10; line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  📦 오늘 오후 3시 이전 주문 시 당일 출고 &nbsp;|&nbsp;
+  고객센터: 1588-0000
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <a href="/" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="KYUBOBOOK 로고" style="height:65px; width:65px; vertical-align:middle; margin-right:10px; object-fit:contain; border-radius:50%;">KYUBO<span>BOOK</span></a>
+      <form class="search-wrap" action="/search" method="GET">
+        <select name="type">
+          <option value="전체">전체</option>
+          <option value="도서명">도서명</option>
+          <option value="저자명">저자명</option>
+          <option value="출판사">출판사</option>
+        </select>
+        <input type="text" name="q" placeholder="도서명, 저자, 출판사를 입력하세요">
+        <button type="submit">🔍</button>
+      </form>
+      <div class="header-actions">
+        <a href="/cart" class="icon-btn">🛒</a>
+        {% if session.member_id %}
+        <a href="/mypage" class="btn-action">{{ session.member_name }}</a>
+        <a href="/logout" class="btn-action" style="color:var(--accent);border-color:var(--accent);">로그아웃</a>
+        {% else %}
+        <a href="/login" class="btn-action primary">로그인 / 회원가입</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-item">🏠홈</a>
+      <a href="/books/local" class="nav-item {% if is_local == true %}active{% endif %}">🇰🇷국내도서</a>
+      <a href="/books/foreign" class="nav-item {% if is_local == false %}active{% endif %}">🌍외국도서</a>
+      <a href="/bestseller" class="nav-item {% if "베스트셀러" in (page_title or "") %}active{% endif %}">🏆베스트셀러</a>
+      <a href="/new-releases" class="nav-item {% if "신간" in (page_title or "") %}active{% endif %}">✨신간</a>
+      <a href="/category" class="nav-item {% if page_title == "카테고리" %}active{% endif %}">📚카테고리</a>
+      
+      <a href="/inventory" class="nav-item" style="color:var(--accent);font-weight:700;">📦 재고확인</a>
+    </div>
+  </nav>
+</header>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span>›</span>
+      <span>{% if page_title %}{{ page_title }}{% elif is_local %}국내도서{% else %}외국도서{% endif %}</span>
+    </div>
+    <h1>{% if page_title %}{{ page_title }}{% elif is_local %}🇰🇷 국내도서{% else %}🌍 외국도서{% endif %}</h1>
+    <p>{% if page_desc %}{{ page_desc }}{% elif is_local %}국내 작가들의 작품을 만나보세요{% else %}세계 각국의 명작을 만나보세요{% endif %}</p>
+  </div>
+</div>
+
+<div class="page-layout">
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <div class="sidebar-box">
+      <div class="sidebar-title">장르</div>
+      <div class="sidebar-body">
+        <a href="?genre=&sort={{ sort }}" class="sidebar-link {% if not selected_genre %}active{% endif %}">
+          전체 <span class="cnt">{{ total }}</span>
+        </a>
+        {% for g in genres %}
+        <a href="?genre={{ g.Genre }}&sort={{ sort }}"
+           class="sidebar-link {% if selected_genre == g.Genre %}active{% endif %}">
+          {{ g.Genre }} <span class="cnt">{{ g.cnt }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <!-- 메인 -->
+  <div class="main-area">
+
+    <!-- 정렬 바 -->
+    <div class="sort-bar">
+      <span class="total">총 <strong>{{ total }}</strong>권</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        {% if '베스트셀러' not in (page_title or '') and '신간' not in (page_title or '') %}
+        <div class="sort-options">
+          {% for val, label in [('newest','최신순'),('price_asc','낮은가격'),('price_desc','높은가격'),('title','가나다순')] %}
+          <button class="sort-btn {% if sort==val %}active{% endif %}"
+                  onclick="setSort('{{ val }}')">{{ label }}</button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="view-toggle">
+          <button class="view-btn active" id="btn-list" onclick="setView('list')" title="리스트">☰</button>
+          <button class="view-btn" id="btn-grid" onclick="setView('grid')" title="그리드">⊞</button>
+        </div>
+      </div>
+    </div>
+
+    {% if books %}
+
+    <!-- 리스트 뷰 -->
+    <div id="view-list">
+      <div class="book-list">
+        {% for book in books %}
+        <div class="book-list-item">
+          {% if book.IsAdult and not session.get('is_adult_verified') %}
+          <div class="adult-cover-wrap">
+            <a href="/book/{{ book.BookID }}" class="book-cover c{{ (loop.index % 5) + 1 }}">
+              {% if book.ImageURL %}<img src="{{ book.ImageURL }}" alt="{{ book.Title }}">{% endif %}
+              <span>{{ book.Title | truncate(20, true, '') }}</span>
+            </a>
+            <div class="adult-badge">🔞<br>성인인증<br>필요</div>
+          </div>
+          {% else %}
+          <a href="/book/{{ book.BookID }}" class="book-cover c{{ (loop.index % 5) + 1 }}">
+            {% if book.ImageURL %}<img src="{{ book.ImageURL }}" alt="{{ book.Title }}">{% endif %}
+            <span>{{ book.Title | truncate(20, true, '') }}</span>
+          </a>
+          {% endif %}
+          <div class="book-info">
+            <div class="book-genre">{{ book.Genre or '도서' }}</div>
+            <a href="/book/{{ book.BookID }}" class="book-title-link">{{ book.Title }}</a>
+            <div class="book-meta">
+              <span>{{ book.AuthorName }}</span>
+              <span>{{ book.PublisherName }}</span>
+              <span>{{ book.PublishDate | string | truncate(7, true, '') if book.PublishDate else '' }}</span>
+            </div>
+            {% if book.Description %}
+            <div class="book-desc">{{ book.Description }}</div>
+            {% endif %}
+          </div>
+          <div class="book-price-area">
+            <div class="book-price">{{ "{:,}".format(book.Price) }}원</div>
+            <div class="stock-badge {% if book.Stock > 0 %}in-stock{% else %}out-stock{% endif %}">
+              {% if book.Stock > 0 %}재고 {{ book.Stock }}권{% else %}품절{% endif %}
+            </div>
+            <div class="book-actions">
+              {% if book.IsAdult and not session.get('is_adult_verified') %}
+              <button class="btn-cart disabled" onclick="alert('성인 인증된 고객만 구매 가능합니다.')" style="opacity:0.5;cursor:not-allowed;">🔞 성인인증 필요</button>
+              {% elif book.Stock > 0 %}
+              <button class="btn-cart" onclick="addToCart({{ book.BookID }}, this)">🛒 장바구니</button>
+              {% else %}
+              <span class="btn-cart disabled">품절</span>
+              {% endif %}
+              <a href="/book/{{ book.BookID }}" class="btn-detail">상세보기</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 그리드 뷰 -->
+    <div id="view-grid" style="display:none;">
+      <div class="book-grid">
+        {% for book in books %}
+        <div class="book-grid-item">
+          {% if book.IsAdult and not session.get('is_adult_verified') %}
+          <div class="adult-cover-wrap" style="display:block;">
+            <a href="/book/{{ book.BookID }}" class="book-grid-cover c{{ (loop.index % 5) + 1 }}">
+              {% if book.ImageURL %}<img src="{{ book.ImageURL }}" alt="{{ book.Title }}">{% endif %}
+              <span>{{ book.Title | truncate(24, true, '') }}</span>
+            </a>
+            <div class="adult-badge">🔞 성인인증 필요</div>
+          </div>
+          {% else %}
+          <a href="/book/{{ book.BookID }}" class="book-grid-cover c{{ (loop.index % 5) + 1 }}">
+            {% if book.ImageURL %}<img src="{{ book.ImageURL }}" alt="{{ book.Title }}">{% endif %}
+            <span>{{ book.Title | truncate(24, true, '') }}</span>
+          </a>
+          {% endif %}
+          <div class="book-grid-body">
+            <a href="/book/{{ book.BookID }}" class="book-grid-title">{{ book.Title }}</a>
+            <div class="book-grid-author">{{ book.AuthorName }} · {{ book.PublisherName }}</div>
+            <div class="book-grid-price">{{ "{:,}".format(book.Price) }}원</div>
+            {% if book.Stock > 0 %}
+            <button class="book-grid-btn" onclick="addToCart({{ book.BookID }}, this)">🛒 장바구니 담기</button>
+            {% else %}
+            <span class="book-grid-btn" style="background:var(--muted);cursor:not-allowed;">품절</span>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 페이지네이션 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+      {% if page > 1 %}
+      <a href="?page={{ page-1 }}&genre={{ selected_genre or '' }}&sort={{ sort }}" class="page-btn">‹</a>
+      {% else %}<span class="page-btn disabled">‹</span>{% endif %}
+
+      {% set sp = [page-2, 1] | max %}
+      {% set ep = [sp+4, total_pages] | min %}
+      {% for p in range(sp, ep+1) %}
+      <a href="?page={{ p }}&genre={{ selected_genre or '' }}&sort={{ sort }}"
+         class="page-btn {% if p == page %}active{% endif %}">{{ p }}</a>
+      {% endfor %}
+
+      {% if page < total_pages %}
+      <a href="?page={{ page+1 }}&genre={{ selected_genre or '' }}&sort={{ sort }}" class="page-btn">›</a>
+      {% else %}<span class="page-btn disabled">›</span>{% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">📭</div>
+      <p>해당 조건의 도서가 없습니다.</p>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">KYUBO<span>BOOK</span></div>
+        <div class="footer-desc">온라인 주문 및 재고관리<br>시스템 기반 KYUBOBOOK 스마트 서점</div>
+      </div>
+      <div class="footer-col">
+        <h4>고객 서비스</h4>
+        <a href="/notice">공지사항</a>
+        <a href="/faq">자주 묻는 질문</a>
+        <a href="/shipping">배송 안내</a>
+      </div>
+      <div class="footer-col">
+        <h4>회원 서비스</h4>
+        <a href="/mypage">마이페이지</a>
+      </div>
+      <div class="footer-col">
+        <h4>회사 정보</h4>
+        <a href="/about">회사 소개</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 KYUBOBOOK. All rights reserved. | PC 버전</span>
+      <div>
+        <a href="#">이용약관</a>
+        <a href="#">개인정보처리방침</a>
+        <a href="#">사업자정보</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+function setSort(val) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('sort', val);
+  url.searchParams.set('page', '1');
+  window.location.href = url.toString();
+}
+function setView(type) {
+  document.getElementById('view-list').style.display = type === 'list' ? 'block' : 'none';
+  document.getElementById('view-grid').style.display = type === 'grid' ? 'block' : 'none';
+  document.getElementById('btn-list').classList.toggle('active', type === 'list');
+  document.getElementById('btn-grid').classList.toggle('active', type === 'grid');
+  localStorage.setItem('bookViewMode', type);
+}
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('bookViewMode');
+  if (saved === 'grid') setView('grid');
+});
+</script>
+
+<style>
+.booklist-toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: #1A1410; color: white;
+  padding: 12px 22px; font-size: 13px; font-weight: 600;
+  border-radius: 4px; z-index: 9999;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.booklist-toast.show { opacity: 1; transform: translateY(0); }
+</style>
+<div class="booklist-toast" id="booklistToast"></div>
+
+<script>
+function showBooklistToast(msg, duration) {
+  const t = document.getElementById('booklistToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), duration || 2500);
+}
+
+function addToCart(bookId, btn) {
+  fetch('/cart/add-ajax/' + bookId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quantity: 1 })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        showBooklistToast('🛒 장바구니에 담겼습니다!');
+      } else if (data.error && data.error.includes('로그인')) {
+        showBooklistToast('⚠ 로그인이 필요합니다.', 3000);
+        setTimeout(() => { window.location.href = '/login'; }, 1500);
+      } else {
+        showBooklistToast('❌ ' + (data.error || '오류가 발생했습니다.'), 3500);
+      }
+    })
+    .catch(() => showBooklistToast('❌ 서버 오류가 발생했습니다.', 3500));
+}
+</script>
+</body>
+</html>
